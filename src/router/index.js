@@ -3,11 +3,11 @@ import Login from '@/views/login/index.vue'
 import Layout from '@/layout/index.vue'
 
 const routes = [
-    {
-        path: '/login',
-        component: Login
-    },
-     {
+  {
+    path: '/login',
+    component: Login
+  },
+  {
     path: '/',
     component: Layout,
     redirect: '/project',
@@ -19,33 +19,16 @@ const routes = [
           {
             path: '',
             component: () => import('@/views/project/index.vue')
-          },
-          {
-            path: 'edit',
-            component: () => import('@/views/project/edit.vue')
-          },
-          {
-            path: 'edit/:id',
-            component: () => import('@/views/project/edit.vue')
           }
         ]
       },
 
-      // 科研人员
       {
         path: 'researcher',
         children: [
           {
             path: '',
             component: () => import('@/views/researcher/index.vue')
-          },
-          {
-            path: 'edit',
-            component: () => import('@/views/researcher/edit.vue')
-          },
-          {
-            path: 'edit/:id',
-            component: () => import('@/views/researcher/edit.vue')
           }
         ]
       },
@@ -58,14 +41,6 @@ const routes = [
             path: '',
             component: () => import('@/views/paper/index.vue')
           },
-          {
-            path: 'edit',
-            component: () => import('@/views/paper/edit.vue')
-          },
-          {
-            path: 'edit/:id',
-            component: () => import('@/views/paper/edit.vue')
-          }
         ]
       },
 
@@ -130,8 +105,8 @@ const routes = [
 ]
 
 const router = createRouter({
-    history: createWebHistory(),
-    routes
+  history: createWebHistory(),
+  routes
 })
 
 export default router

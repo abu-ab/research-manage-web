@@ -15,8 +15,8 @@
         <el-option label="EI" value="EI" />
         <el-option label="核心期刊" value="CORE" />
       </el-select>
-      <el-button type="primary">查询</el-button>
-      <el-button>重置</el-button>
+      <el-button type="primary" @click="loadFirstPage">查询</el-button>
+      <el-button @click="reset">重置</el-button>
     </div>
 
     <!-- 表格 -->
@@ -24,41 +24,111 @@
       <el-table-column label="论文标题" prop="title" />
       <el-table-column label="作者" prop="author" />
       <el-table-column label="期刊名称" prop="journal" />
-      <el-table-column label="检索来源" prop="sourceLabel" />
+      <el-table-column label="检索来源" prop="source" />
       <el-table-column label="发表时间" prop="publishDate" />
-      <el-table-column label="操作" width="120">
+      <el-table-column label="操作" width="160">
         <template #default="{ row }">
           <el-button link type="primary" @click="edit(row)">编辑</el-button>
+          <el-button link type="danger" @click="remove(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
+
+    <!-- 分页 -->
+    <div class="mt-4 flex justify-end">
+      <el-pagination
+        background
+        layout="total, sizes, prev, pager, next"
+        :total="page.total"
+        v-model:current-page="page.pageNum"
+        v-model:page-size="page.pageSize"
+        :prev-text="'上一页'"
+        :next-text="'下一页'"
+        @current-change="loadData"
+        @size-change="loadFirstPage"
+      />
+    </div>
+
+    <!-- 弹窗 -->
+    <PaperDialog
+      v-model="dialogVisible"
+      :data="currentRow"
+      @success="loadData"
+    />
   </div>
 </template>
 
 <script setup>
-import { reactive } from 'vue'
-import { useRouter } from 'vue-router'
-
-const router = useRouter()
+import { reactive, ref, onMounted } from "vue";
+import PaperDialog from "./PaperDialog.vue";
+import { ElMessageBox, ElMessage } from "element-plus";
+import { getPaperPage, deletePaper } from "@/api/paper";
 
 const query = reactive({
-  title: '',
-  author: '',
-  source: ''
-})
+  title: "",
+  author: "",
+  source: "",
+});
 
-const list = [
-  {
-    id: 1,
-    title: '基于 Vue 的高校科研管理系统设计',
-    author: '张三',
-    journal: '计算机工程与应用',
-    source: 'SCI',
-    sourceLabel: 'SCI',
-    publishDate: '2024-03-15'
+const list = ref([]);
+const dialogVisible = ref(false);
+const currentRow = ref(null);
+
+const page = reactive({
+  pageNum: 1,
+  pageSize: 10,
+  total: 0,
+});
+
+// 加载第一页
+const loadFirstPage = () => {
+  page.pageNum = 1;
+  loadData();
+};
+
+// 加载数据
+const loadData = async () => {
+  const res = await getPaperPage({
+    pageNum: page.pageNum,
+    pageSize: page.pageSize,
+    title: query.title,
+    author: query.author,
+    source: query.source,
+  });
+  list.value = res.data.records;
+  page.total = res.data.total;
+};
+
+// 重置查询条件
+const reset = () => {
+  query.title = "";
+  query.author = "";
+  query.source = "";
+  loadFirstPage();
+};
+
+// 新增
+const add = () => {
+  currentRow.value = null;
+  dialogVisible.value = true;
+};
+
+// 编辑
+const edit = (row) => {
+  currentRow.value = { ...row };
+  dialogVisible.value = true;
+};
+
+// 删除
+const remove = async (row) => {
+  try {
+    await deletePaper(row.id);
+    ElMessage.success("删除成功");
+    loadData();
+  } catch (err) {
+    ElMessage.error("删除失败");
   }
-]
+};
 
-const add = () => router.push('/paper/edit')
-const edit = (row) => router.push(`/paper/edit/${row.id}`)
+onMounted(loadData);
 </script>
