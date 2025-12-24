@@ -1,8 +1,14 @@
 import request from '@/utils/request'
 
+
+export const getAllResearchers = async () => {
+  const res = await request.get("/researcher/list");
+  return res.data; // 返回科研人员数组 [{id, name, code, ...}]
+};
+
 export function getResearcherPage(params) {
   return request({
-    url: '/api/researcher/page',
+    url: '/researcher/page',
     method: 'get',
     params
   })
@@ -10,7 +16,7 @@ export function getResearcherPage(params) {
 
 export function addResearcher(data) {
   return request({
-    url: '/api/researcher',
+    url: '/researcher',
     method: 'post',
     data
   })
@@ -18,7 +24,7 @@ export function addResearcher(data) {
 
 export function updateResearcher(data) {
   return request({
-    url: '/api/researcher',
+    url: '/researcher',
     method: 'put',
     data
   })
@@ -26,14 +32,14 @@ export function updateResearcher(data) {
 
 export function deleteResearcher(id) {
   return request({
-    url: `/api/researcher/${id}`,
+    url: `/researcher/${id}`,
     method: 'delete'
   })
 }
 
 export function getResearcherDetail(id) {
   return request({
-    url: `/api/researcher/${id}`,
+    url: `/researcher/${id}`,
     method: 'get'
   })
 }

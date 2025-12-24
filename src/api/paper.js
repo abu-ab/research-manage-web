@@ -1,5 +1,10 @@
 import request from "@/utils/request";
 
+export const getPaperList = async () => {
+  const res = await request.get("/paper/list");
+  return res.data;
+};
+
 export const getPaperPage = (params) => {
   return request({
     url: "/paper/page",

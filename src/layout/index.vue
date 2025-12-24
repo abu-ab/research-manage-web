@@ -6,11 +6,7 @@
         科研管理系统
       </div>
 
-      <el-menu
-        router
-        class="border-none"
-        default-active="/project"
-      >
+      <el-menu router class="border-none" default-active="/project">
         <el-menu-item index="/project">
           <span>科研项目管理</span>
         </el-menu-item>
@@ -27,6 +23,10 @@
           <span>著作管理</span>
         </el-menu-item>
 
+        <el-menu-item index="/award">
+          <span>科研奖项管理</span>
+        </el-menu-item>
+
         <el-menu-item index="/dictionary">
           <span>字典管理</span>
         </el-menu-item>
@@ -37,13 +37,9 @@
     <el-container>
       <!-- 顶栏 -->
       <el-header class="bg-white border-b flex items-center justify-between">
-        <div class="text-base font-medium">
-          高校科研管理系统
-        </div>
+        <div class="text-base font-medium">高校科研管理系统</div>
 
-        <el-button size="small" type="danger">
-          退出登录
-        </el-button>
+        <el-button size="small" type="danger"> 退出登录 </el-button>
       </el-header>
 
       <!-- 主体 -->

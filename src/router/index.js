@@ -44,26 +44,15 @@ const routes = [
         ]
       },
 
-      // 著作
       {
         path: 'book',
         children: [
           {
             path: '',
             component: () => import('@/views/book/index.vue')
-          },
-          {
-            path: 'edit',
-            component: () => import('@/views/book/edit.vue')
-          },
-          {
-            path: 'edit/:id',
-            component: () => import('@/views/book/edit.vue')
           }
         ]
       },
-
-      // 获奖
       {
         path: 'award',
         children: [
@@ -71,14 +60,6 @@ const routes = [
             path: '',
             component: () => import('@/views/award/index.vue')
           },
-          {
-            path: 'edit',
-            component: () => import('@/views/award/edit.vue')
-          },
-          {
-            path: 'edit/:id',
-            component: () => import('@/views/award/edit.vue')
-          }
         ]
       },
 

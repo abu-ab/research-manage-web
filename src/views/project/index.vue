@@ -19,8 +19,21 @@
       <el-table-column label="项目名称" prop="name" />
       <el-table-column label="项目编号" prop="code" />
       <el-table-column label="项目性质" prop="type" />
-      <el-table-column label="研究周期" prop="duration" />
+      <el-table-column label="天数" prop="duration" />
       <el-table-column label="负责人" prop="leader" />
+      <el-table-column label="参与人数" prop="memberCount" />
+      <el-table-column label="创建时间" prop="createTime">
+        <template #default="{ row }">
+          {{ formatDate(row.createTime) }}
+        </template>
+      </el-table-column>
+      <el-table-column label="项目状态" width="120">
+        <template #default="{ row }">
+          <el-tag :type="statusTagType(row.status)" effect="light">
+            {{ PROJECT_STATUS_MAP[row.status] }}
+          </el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" width="180">
         <template #default="{ row }">
           <el-button link type="primary" @click="edit(row)">编辑</el-button>
@@ -58,6 +71,9 @@ import { reactive, ref, onMounted } from "vue";
 import { ElMessageBox, ElMessage } from "element-plus";
 import ProjectDialog from "./ProjectDialog.vue";
 import { getProjectPage, deleteProject } from "@/api/project";
+import {formatDate} from "@/utils/format";
+
+import { PROJECT_STATUS_MAP } from "@/constants/projectStatus";
 
 const query = reactive({
   name: "",
@@ -72,6 +88,21 @@ const page = reactive({
   pageSize: 10,
   total: 0,
 });
+
+const statusTagType = (status) => {
+  switch (status) {
+    case 0:
+      return "info";
+    case 1:
+      return "success";
+    case 2:
+      return "warning";
+    case 3:
+      return "danger";
+    default:
+      return "info";
+  }
+};
 
 const loadFirstPage = () => {
   page.pageNum = 1;
@@ -107,23 +138,21 @@ const edit = (row) => {
 };
 
 const remove = (row) => {
-  ElMessageBox.confirm(
-    `确认删除项目 "${row.name}" 吗？`,
-    "提示",
-    {
-      confirmButtonText: "确认",
-      cancelButtonText: "取消",
-      type: "warning",
-    }
-  ).then(async () => {
-    try {
-      await deleteProject(row.id);
-      ElMessage.success("删除成功");
-      loadData();
-    } catch (error) {
-      ElMessage.error("删除失败");
-    }
-  }).catch(() => {});
+  ElMessageBox.confirm(`确认删除项目 "${row.name}" 吗？`, "提示", {
+    confirmButtonText: "确认",
+    cancelButtonText: "取消",
+    type: "warning",
+  })
+    .then(async () => {
+      try {
+        await deleteProject(row.id);
+        ElMessage.success("删除成功");
+        loadData();
+      } catch (error) {
+        ElMessage.error("删除失败");
+      }
+    })
+    .catch(() => {});
 };
 
 onMounted(loadData);

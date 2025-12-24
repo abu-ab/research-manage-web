@@ -1,10 +1,15 @@
 import request from "@/utils/request";
 
-export const getProjectPage = (params) => {
+export const getProjectList = async () => {
+  const res = await request.get("/project/list");
+  return res.data;
+};
+
+export const getProjectPage = (data) => {
   return request({
     url: "/project/page",
-    method: "get",
-    params
+    method: "post",
+    data
   });
 };
 
@@ -18,9 +23,9 @@ export const saveProject = (data) => {
 };
 
 
-export const updateProject = (id, data) => {
+export const updateProject = (data) => {
   return request({
-    url: `/project/${id}`,
+    url: `/project`,
     method: "put",
     data
   });
