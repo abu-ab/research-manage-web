@@ -6,10 +6,17 @@
   >
     <el-form :model="form" ref="formRef" label-width="120px">
       <el-form-item label="关联类型" prop="targetType">
-        <el-select v-model="form.targetType" @change="onTypeChange">
-          <el-option label="科研项目" value="PROJECT" />
-          <el-option label="论文" value="PAPER" />
-          <el-option label="著作" value="BOOK" />
+        <el-select
+          v-model="form.targetType"
+          @change="onTypeChange"
+          placeholder="请选择"
+        >
+          <el-option
+            v-for="item in targetTypeOptions"
+            :key="item.dictCode"
+            :label="item.dictLabel"
+            :value="item.dictCode"
+          />
         </el-select>
       </el-form-item>
       <el-form-item label="关联对象" prop="targetId">
@@ -26,15 +33,25 @@
         <el-input v-model="form.name" />
       </el-form-item>
       <el-form-item label="奖项级别">
-        <el-select v-model="form.level">
-          <el-option label="国家级" value="国家级" />
-          <el-option label="省部级" value="省部级" />
-          <el-option label="校级" value="校级" />
+        <el-select v-model="form.level" placeholder="请选择">
+          <el-option
+            v-for="(item, index) in levelOptions"
+            :key="item.dictCode + index"
+            :label="item.dictLabel"
+            :value="item.dictCode"
+          />
         </el-select>
       </el-form-item>
 
       <el-form-item label="奖项等级">
-        <el-input v-model="form.awardRank" />
+        <el-select v-model="form.awardRank" placeholder="请选择">
+          <el-option
+            v-for="(item, index) in rankOptions"
+            :key="item.dictCode + index"
+            :label="item.dictLabel"
+            :value="item.dictCode"
+          />
+        </el-select>
       </el-form-item>
 
       <el-form-item label="授奖单位">
@@ -68,10 +85,11 @@ import { saveAward, updateAward } from "@/api/award";
 import { getProjectList } from "@/api/project";
 import { getPaperList } from "@/api/paper";
 import { getBookList } from "@/api/book";
+import { getDict } from "@/api/dict";
 
 const props = defineProps({
   modelValue: Boolean,
-  data: Object
+  data: Object,
 });
 
 const emit = defineEmits(["update:modelValue", "success"]);
@@ -88,13 +106,15 @@ const form = reactive({
   awardRank: "",
   organization: "",
   awardDate: "",
-  description: ""
+  description: "",
 });
 
 const rules = {
-  targetType: [{ required: true, message: "请选择关联类型", trigger: "change" }],
+  targetType: [
+    { required: true, message: "请选择关联类型", trigger: "change" },
+  ],
   targetId: [{ required: true, message: "请选择关联对象", trigger: "change" }],
-  name: [{ required: true, message: "请输入奖项名称", trigger: "blur" }]
+  name: [{ required: true, message: "请输入奖项名称", trigger: "blur" }],
 };
 
 const targetList = ref([]);
@@ -116,20 +136,36 @@ const onTypeChange = async () => {
   }
 };
 
+const targetTypeOptions = ref([]);
+const levelOptions = ref([]);
+const rankOptions = ref([]);
+
 /** 弹窗打开 */
-watch(() => props.modelValue, async (val) => {
-  visible.value = val;
-  if (val) {
-    if (props.data) {
-      Object.assign(form, props.data);
-      await onTypeChange();
-    } else {
-      resetForm();
+watch(
+  () => props.modelValue,
+  async (val) => {
+    visible.value = val;
+    await loadDict();
+    if (val) {
+      if (props.data) {
+        Object.assign(form, props.data);
+        await onTypeChange();
+      } else {
+        resetForm();
+      }
     }
   }
-});
+);
 
 watch(visible, (val) => emit("update:modelValue", val));
+
+const loadDict = async () => {
+  let res = await getDict("AWARD_TARGET_TYPE");
+  targetTypeOptions.value = res;
+  console.log("targetTypeOptions", res);
+  levelOptions.value = await getDict("AWARD_LEVEL");
+  rankOptions.value = await getDict("AWARD_RANK");
+};
 
 const resetForm = () => {
   Object.assign(form, {
@@ -141,7 +177,7 @@ const resetForm = () => {
     awardRank: "",
     organization: "",
     awardDate: "",
-    description: ""
+    description: "",
   });
   targetList.value = [];
   formRef.value?.clearValidate();
