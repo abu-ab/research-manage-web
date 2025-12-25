@@ -7,6 +7,7 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import 'uno.css'
 
 import router from './router'
+import { initAnimations } from './utils/animations'
 
 const app = createApp(App)
 
@@ -15,8 +16,15 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
 
+// 配置Element Plus
 app.use(ElementPlus, {
-    locale: zhCn
+  locale: zhCn,
+  size: 'default'
 })
+
 app.use(router)
+
+// 初始化动画系统
+initAnimations()
+
 app.mount('#app')

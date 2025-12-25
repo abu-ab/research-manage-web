@@ -151,7 +151,7 @@
               <el-button link type="primary" @click="edit(row)" :icon="Edit">
                 编辑
               </el-button>
-              <el-button link type="info" :icon="View">
+              <el-button link type="info" @click="viewDetail(row)" :icon="View">
                 详情
               </el-button>
               <el-button link type="danger" @click="remove(row)" :icon="Delete">
@@ -183,6 +183,47 @@
       :data="currentRow"
       @success="loadData"
     />
+
+    <!-- 详情弹窗 -->
+    <el-dialog
+      v-model="detailVisible"
+      title="著作详情"
+      width="800px"
+      :before-close="() => detailVisible = false"
+    >
+      <div v-if="currentRow" class="detail-content">
+        <el-descriptions :column="2" border>
+          <el-descriptions-item label="著作名称" :span="2">
+            <el-tag type="success" size="large">{{ currentRow.name }}</el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item label="作者">
+            <el-tag type="primary">{{ currentRow.author }}</el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item label="出版社">
+            {{ currentRow.publisher }}
+          </el-descriptions-item>
+          <el-descriptions-item label="出版时间">
+            {{ currentRow.publishDate }}
+          </el-descriptions-item>
+          <el-descriptions-item label="ISBN">
+            {{ currentRow.isbn || '暂无' }}
+          </el-descriptions-item>
+          <el-descriptions-item label="页数">
+            {{ currentRow.pages || '暂无' }}页
+          </el-descriptions-item>
+          <el-descriptions-item label="价格">
+            {{ currentRow.price ? `¥${currentRow.price}` : '暂无' }}
+          </el-descriptions-item>
+          <el-descriptions-item label="著作简介" :span="2">
+            {{ currentRow.description || '暂无简介' }}
+          </el-descriptions-item>
+        </el-descriptions>
+      </div>
+      <template #footer>
+        <el-button @click="detailVisible = false">关闭</el-button>
+        <el-button type="primary" @click="edit(currentRow)">编辑著作</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -214,6 +255,7 @@ const query = reactive({
 
 const list = ref([]);
 const dialogVisible = ref(false);
+const detailVisible = ref(false);
 const currentRow = ref(null);
 
 const page = reactive({
@@ -269,6 +311,12 @@ const add = () => {
 const edit = (row) => {
   currentRow.value = { ...row };
   dialogVisible.value = true;
+};
+
+// 查看详情
+const viewDetail = (row) => {
+  currentRow.value = { ...row };
+  detailVisible.value = true;
 };
 
 // 删除

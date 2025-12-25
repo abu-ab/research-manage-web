@@ -174,7 +174,7 @@
               <el-button link type="primary" @click="edit(row)" :icon="Edit">
                 编辑
               </el-button>
-              <el-button link type="info" :icon="View">
+              <el-button link type="info" @click="viewDetail(row)" :icon="View">
                 详情
               </el-button>
               <el-button link type="danger" @click="remove(row)" :icon="Delete">
@@ -206,6 +206,55 @@
       :data="currentRow"
       @success="loadData"
     />
+
+    <!-- 详情弹窗 -->
+    <el-dialog
+      v-model="detailVisible"
+      title="项目详情"
+      width="800px"
+      :before-close="() => detailVisible = false"
+    >
+      <div v-if="currentRow" class="detail-content">
+        <el-descriptions :column="2" border>
+          <el-descriptions-item label="项目名称" :span="2">
+            <el-tag type="primary" size="large">{{ currentRow.name }}</el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item label="项目编号">
+            {{ currentRow.code }}
+          </el-descriptions-item>
+          <el-descriptions-item label="项目性质">
+            {{ currentRow.type }}
+          </el-descriptions-item>
+          <el-descriptions-item label="项目负责人">
+            <el-tag type="success">{{ currentRow.leader }}</el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item label="参与人数">
+            <el-tag type="info">{{ currentRow.memberCount }}人</el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item label="项目周期">
+            {{ currentRow.duration }}天
+          </el-descriptions-item>
+          <el-descriptions-item label="项目状态">
+            <el-tag 
+              :type="statusTagType(currentRow.status)" 
+              effect="light"
+            >
+              {{ PROJECT_STATUS_MAP[currentRow.status] }}
+            </el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item label="创建时间">
+            {{ formatDate(currentRow.createTime) }}
+          </el-descriptions-item>
+          <el-descriptions-item label="项目描述" :span="2">
+            {{ currentRow.description || '暂无描述' }}
+          </el-descriptions-item>
+        </el-descriptions>
+      </div>
+      <template #footer>
+        <el-button @click="detailVisible = false">关闭</el-button>
+        <el-button type="primary" @click="edit(currentRow)">编辑项目</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -243,6 +292,7 @@ const query = reactive({
 
 const list = ref([]);
 const dialogVisible = ref(false);
+const detailVisible = ref(false);
 const currentRow = ref(null);
 const page = reactive({
   pageNum: 1,
@@ -312,6 +362,11 @@ const add = () => {
 const edit = (row) => {
   currentRow.value = { ...row };
   dialogVisible.value = true;
+};
+
+const viewDetail = (row) => {
+  currentRow.value = { ...row };
+  detailVisible.value = true;
 };
 
 const remove = (row) => {

@@ -202,7 +202,7 @@
               <el-button link type="primary" @click="edit(row)" :icon="Edit">
                 编辑
               </el-button>
-              <el-button link type="info" :icon="View">
+              <el-button link type="info" @click="viewDetail(row)" :icon="View">
                 详情
               </el-button>
               <el-button link type="danger" @click="remove(row)" :icon="Delete">
@@ -234,6 +234,55 @@
       :targetType="query.targetType || 'PROJECT'"
       @success="loadData"
     />
+
+    <!-- 详情弹窗 -->
+    <el-dialog
+      v-model="detailVisible"
+      title="奖项详情"
+      width="800px"
+      :before-close="() => detailVisible = false"
+    >
+      <div v-if="currentRow" class="detail-content">
+        <el-descriptions :column="2" border>
+          <el-descriptions-item label="奖项名称" :span="2">
+            <el-tag type="warning" size="large">{{ currentRow.name }}</el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item label="关联类型">
+            <el-tag :type="getTypeTagType(currentRow.targetType)">
+              {{ getTypeLabel(currentRow.targetType) }}
+            </el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item label="奖项级别">
+            <el-tag type="warning" effect="light">{{ currentRow.level }}</el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item label="奖项等级">
+            <div class="award-rank">
+              <el-icon><Medal /></el-icon>
+              <span>{{ currentRow.awardRank }}</span>
+            </div>
+          </el-descriptions-item>
+          <el-descriptions-item label="授奖单位">
+            {{ currentRow.organization }}
+          </el-descriptions-item>
+          <el-descriptions-item label="获奖时间">
+            <div class="award-date">
+              <el-icon><Calendar /></el-icon>
+              <span>{{ currentRow.awardDate }}</span>
+            </div>
+          </el-descriptions-item>
+          <el-descriptions-item label="关联对象">
+            {{ currentRow.targetName || '暂无' }}
+          </el-descriptions-item>
+          <el-descriptions-item label="奖项描述" :span="2">
+            {{ currentRow.description || '暂无描述' }}
+          </el-descriptions-item>
+        </el-descriptions>
+      </div>
+      <template #footer>
+        <el-button @click="detailVisible = false">关闭</el-button>
+        <el-button type="primary" @click="edit(currentRow)">编辑奖项</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -272,6 +321,7 @@ const list = ref([]);
 
 /** 弹窗 */
 const dialogVisible = ref(false);
+const detailVisible = ref(false);
 const currentRow = ref(null);
 
 /** 分页 */
@@ -342,6 +392,12 @@ const add = () => {
 const edit = (row) => {
   currentRow.value = { ...row };
   dialogVisible.value = true;
+};
+
+/** 查看详情 */
+const viewDetail = (row) => {
+  currentRow.value = { ...row };
+  detailVisible.value = true;
 };
 
 /** 删除 */
