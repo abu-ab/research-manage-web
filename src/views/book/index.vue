@@ -33,14 +33,6 @@
               :prefix-icon="Reading"
             />
           </el-col>
-          <el-col :span="6">
-            <el-input
-              v-model="query.author"
-              placeholder="作者"
-              clearable
-              :prefix-icon="User"
-            />
-          </el-col>
           <el-col :span="12">
             <div class="search-actions">
               <el-button type="primary" @click="loadFirstPage" :icon="Search">

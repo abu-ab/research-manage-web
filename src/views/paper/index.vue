@@ -32,14 +32,6 @@
             />
           </el-col>
           <el-col :span="6">
-            <el-input
-              v-model="query.author"
-              placeholder="作者"
-              clearable
-              :prefix-icon="User"
-            />
-          </el-col>
-          <el-col :span="6">
             <el-select
               v-model="query.source"
               placeholder="检索来源"
