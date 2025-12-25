@@ -6,11 +6,11 @@ export const getBookList = async () => {
   return res.data;
 };
 
-export const getBookPage = (params) => {
+export const getBookPage = (data) => {
   return request({
     url: "/book/page",
-    method: "get",
-    params
+    method: "post",
+    data
   });
 };
 

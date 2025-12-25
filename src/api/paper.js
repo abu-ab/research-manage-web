@@ -5,11 +5,11 @@ export const getPaperList = async () => {
   return res.data;
 };
 
-export const getPaperPage = (params) => {
+export const getPaperPage = (data) => {
   return request({
     url: "/paper/page",
-    method: "get",
-    params
+    method: "post",
+    data
   });
 };
 
