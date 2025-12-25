@@ -10,8 +10,14 @@ const routes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/project',
+    redirect: '/dashboard',
     children: [
+      // 首页
+      {
+        path: 'dashboard',
+        component: () => import('@/views/dashboard/index.vue')
+      },
+
       // 科研项目
       {
         path: 'project',
