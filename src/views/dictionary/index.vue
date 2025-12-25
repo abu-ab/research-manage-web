@@ -1,6 +1,5 @@
 <template>
   <div class="page-container">
-    <!-- 页面头部 -->
     <div class="page-header card-shadow">
       <div class="header-content">
         <div class="header-left">
@@ -21,26 +20,21 @@
       </div>
     </div>
 
-    <!-- 搜索区域 -->
     <div class="search-section card-shadow">
-      <div class="search-header">
-        <el-icon><Search /></el-icon>
-        <span>搜索筛选</span>
-      </div>
       <div class="search-form">
         <el-row :gutter="16">
           <el-col :span="6">
-            <el-input 
-              v-model="query.dictType" 
-              placeholder="字典类型" 
+            <el-input
+              v-model="query.dictType"
+              placeholder="字典类型"
               clearable
               :prefix-icon="Setting"
             />
           </el-col>
           <el-col :span="6">
-            <el-input 
-              v-model="query.dictLabel" 
-              placeholder="字典标签" 
+            <el-input
+              v-model="query.dictLabel"
+              placeholder="字典标签"
               clearable
               :prefix-icon="Key"
             />
@@ -50,24 +44,21 @@
               <el-button type="primary" @click="loadFirstPage" :icon="Search">
                 查询
               </el-button>
-              <el-button @click="reset" :icon="Refresh">
-                重置
-              </el-button>
-              <el-button type="success" :icon="Download">
-                导出
-              </el-button>
+              <el-button @click="reset" :icon="Refresh"> 重置 </el-button>
             </div>
           </el-col>
         </el-row>
       </div>
     </div>
 
-    <!-- 统计卡片 -->
     <div class="stats-section">
       <el-row :gutter="16">
         <el-col :span="8">
           <div class="stat-card card-shadow">
-            <div class="stat-icon" style="background: linear-gradient(135deg, #909399, #73767a);">
+            <div
+              class="stat-icon"
+              style="background: linear-gradient(135deg, #909399, #73767a)"
+            >
               <el-icon size="24"><Setting /></el-icon>
             </div>
             <div class="stat-content">
@@ -78,7 +69,10 @@
         </el-col>
         <el-col :span="8">
           <div class="stat-card card-shadow">
-            <div class="stat-icon" style="background: linear-gradient(135deg, #52c41a, #389e0d);">
+            <div
+              class="stat-icon"
+              style="background: linear-gradient(135deg, #52c41a, #389e0d)"
+            >
               <el-icon size="24"><SuccessFilled /></el-icon>
             </div>
             <div class="stat-content">
@@ -89,7 +83,10 @@
         </el-col>
         <el-col :span="8">
           <div class="stat-card card-shadow">
-            <div class="stat-icon" style="background: linear-gradient(135deg, #1890ff, #096dd9);">
+            <div
+              class="stat-icon"
+              style="background: linear-gradient(135deg, #1890ff, #096dd9)"
+            >
               <el-icon size="24"><Collection /></el-icon>
             </div>
             <div class="stat-content">
@@ -101,7 +98,6 @@
       </el-row>
     </div>
 
-    <!-- 表格区域 -->
     <div class="table-section card-shadow">
       <div class="table-header">
         <div class="table-title">
@@ -117,22 +113,17 @@
       </div>
 
       <el-table :data="list" border stripe class="dict-table">
-        <el-table-column type="selection" width="55" />
-        <el-table-column label="字典信息" min-width="200">
+        <el-table-column label="字典信息">
           <template #default="{ row }">
             <div class="dict-info">
               <div class="dict-label">
-                <el-icon color="#909399"><Setting /></el-icon>
                 {{ row.dictLabel }}
-              </div>
-              <div class="dict-meta">
-                <span class="dict-type">类型：{{ row.dictType }}</span>
               </div>
             </div>
           </template>
         </el-table-column>
-        
-        <el-table-column label="字典编码" prop="dictCode" width="150">
+
+        <el-table-column label="字典编码" prop="dictCode">
           <template #default="{ row }">
             <div class="dict-code">
               <el-tag size="small" type="info">{{ row.dictCode }}</el-tag>
@@ -140,36 +131,23 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="排序" prop="sort" width="80" align="center">
+        <el-table-column label="排序" prop="sort" align="center">
           <template #default="{ row }">
             <div class="sort-info">
-              <el-icon><Sort /></el-icon>
               <span>{{ row.sort }}</span>
             </div>
           </template>
         </el-table-column>
 
-        <el-table-column label="状态" prop="status" width="100" align="center">
+        <el-table-column label="状态" prop="status" align="center">
           <template #default="{ row }">
-            <el-tag 
-              :type="row.status === 1 ? 'success' : 'info'" 
+            <el-tag
+              :type="row.status === 1 ? 'success' : 'info'"
               effect="light"
               size="small"
             >
-              <el-icon>
-                <component :is="row.status === 1 ? 'CircleCheckFilled' : 'CircleCloseFilled'" />
-              </el-icon>
-              {{ row.status === 1 ? '启用' : '停用' }}
+              {{ row.status === 1 ? "启用" : "停用" }}
             </el-tag>
-          </template>
-        </el-table-column>
-
-        <el-table-column label="创建时间" prop="createTime" width="120" align="center">
-          <template #default="{ row }">
-            <div class="create-time">
-              <el-icon><Calendar /></el-icon>
-              <span>{{ formatDate(row.createTime) }}</span>
-            </div>
           </template>
         </el-table-column>
 
@@ -179,9 +157,7 @@
               <el-button link type="primary" @click="edit(row)" :icon="Edit">
                 编辑
               </el-button>
-              <el-button link type="info" @click="viewDetail(row)" :icon="View">
-                详情
-              </el-button>
+           
               <el-button link type="danger" @click="remove(row)" :icon="Delete">
                 删除
               </el-button>
@@ -190,7 +166,6 @@
         </el-table-column>
       </el-table>
 
-      <!-- 分页 -->
       <div class="pagination-wrapper">
         <el-pagination
           background
@@ -205,24 +180,24 @@
       </div>
     </div>
 
-    <!-- 弹窗 -->
     <DictionaryDialog
       v-model="dialogVisible"
       :data="currentRow"
       @success="loadData"
     />
 
-    <!-- 详情弹窗 -->
     <el-dialog
       v-model="detailVisible"
       title="字典详情"
       width="800px"
-      :before-close="() => detailVisible = false"
+      :before-close="() => (detailVisible = false)"
     >
       <div v-if="currentRow" class="detail-content">
         <el-descriptions :column="2" border>
           <el-descriptions-item label="字典标签" :span="2">
-            <el-tag type="primary" size="large">{{ currentRow.dictLabel }}</el-tag>
+            <el-tag type="primary" size="large">{{
+              currentRow.dictLabel
+            }}</el-tag>
           </el-descriptions-item>
           <el-descriptions-item label="字典类型">
             {{ currentRow.dictType }}
@@ -237,14 +212,20 @@
             </div>
           </el-descriptions-item>
           <el-descriptions-item label="状态">
-            <el-tag 
-              :type="currentRow.status === 1 ? 'success' : 'info'" 
+            <el-tag
+              :type="currentRow.status === 1 ? 'success' : 'info'"
               effect="light"
             >
               <el-icon>
-                <component :is="currentRow.status === 1 ? 'CircleCheckFilled' : 'CircleCloseFilled'" />
+                <component
+                  :is="
+                    currentRow.status === 1
+                      ? 'CircleCheckFilled'
+                      : 'CircleCloseFilled'
+                  "
+                />
               </el-icon>
-              {{ currentRow.status === 1 ? '启用' : '停用' }}
+              {{ currentRow.status === 1 ? "启用" : "停用" }}
             </el-tag>
           </el-descriptions-item>
           <el-descriptions-item label="创建时间">
@@ -254,7 +235,7 @@
             </div>
           </el-descriptions-item>
           <el-descriptions-item label="备注" :span="2">
-            {{ currentRow.remark || '暂无备注' }}
+            {{ currentRow.remark || "暂无备注" }}
           </el-descriptions-item>
         </el-descriptions>
       </div>
@@ -272,30 +253,27 @@ import DictionaryDialog from "./DictionaryDialog.vue";
 import { getDictPage, deleteDict } from "@/api/dict";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { formatDate } from "@/utils/format";
-import { 
-  Setting, 
-  Plus, 
-  Search, 
-  Key, 
-  Refresh, 
-  Download,
+import {
+  Setting,
+  Plus,
+  Search,
+  Key,
+  Refresh,
   SuccessFilled,
   Collection,
   List,
   Grid,
   Menu,
   Sort,
-  CircleCheckFilled,
-  CircleCloseFilled,
   Calendar,
   Edit,
   View,
-  Delete
-} from '@element-plus/icons-vue';
+  Delete,
+} from "@element-plus/icons-vue";
 
 const query = reactive({
   dictType: "",
-  dictLabel: ""
+  dictLabel: "",
 });
 
 const list = ref([]);
@@ -306,17 +284,15 @@ const currentRow = ref(null);
 const page = reactive({
   pageNum: 1,
   pageSize: 10,
-  total: 0
+  total: 0,
 });
 
-// 计算启用状态的字典数量
 const getEnabledCount = () => {
-  return list.value.filter(item => item.status === 1).length;
+  return list.value.filter((item) => item.status === 1).length;
 };
 
-// 计算字典类型数量
 const getTypeCount = () => {
-  const types = new Set(list.value.map(item => item.dictType));
+  const types = new Set(list.value.map((item) => item.dictType));
   return types.size;
 };
 
@@ -330,7 +306,7 @@ const loadData = async () => {
     pageNum: page.pageNum,
     pageSize: page.pageSize,
     dictType: query.dictType,
-    dictLabel: query.dictLabel
+    dictLabel: query.dictLabel,
   });
   list.value = res.data.records;
   page.total = res.data.total;
@@ -359,21 +335,15 @@ const viewDetail = (row) => {
 
 const remove = async (row) => {
   try {
-    await ElMessageBox.confirm(
-      `确定删除字典「${row.dictLabel}」吗？`,
-      "提示",
-      { 
-        type: "warning",
-        confirmButtonText: "确认",
-        cancelButtonText: "取消"
-      }
-    );
+    await ElMessageBox.confirm(`确定删除字典「${row.dictLabel}」吗？`, "提示", {
+      type: "warning",
+      confirmButtonText: "确认",
+      cancelButtonText: "取消",
+    });
     await deleteDict(row.id);
     ElMessage.success("删除成功");
     loadData();
-  } catch (err) {
-    // 用户取消或删除失败
-  }
+  } catch (err) {}
 };
 
 onMounted(loadData);
@@ -570,11 +540,11 @@ onMounted(loadData);
     gap: 16px;
     align-items: flex-start;
   }
-  
+
   .search-form .el-col {
     margin-bottom: 12px;
   }
-  
+
   .stats-section .el-col {
     margin-bottom: 12px;
   }

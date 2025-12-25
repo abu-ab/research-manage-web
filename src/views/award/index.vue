@@ -1,6 +1,5 @@
 <template>
   <div class="page-container">
-    <!-- 页面头部 -->
     <div class="page-header card-shadow">
       <div class="header-content">
         <div class="header-left">
@@ -21,12 +20,7 @@
       </div>
     </div>
 
-    <!-- 搜索区域 -->
     <div class="search-section card-shadow">
-      <div class="search-header">
-        <el-icon><Search /></el-icon>
-        <span>搜索筛选</span>
-      </div>
       <div class="search-form">
         <el-row :gutter="16">
           <el-col :span="6">
@@ -72,95 +66,22 @@
               <el-button @click="reset" :icon="Refresh">
                 重置
               </el-button>
-              <el-button type="success" :icon="Download">
-                导出
-              </el-button>
             </div>
           </el-col>
         </el-row>
       </div>
     </div>
 
-    <!-- 统计卡片 -->
-    <div class="stats-section">
-      <el-row :gutter="16">
-        <el-col :span="6">
-          <div class="stat-card card-shadow">
-            <div class="stat-icon" style="background: linear-gradient(135deg, #faad14, #d48806);">
-              <el-icon size="24"><Trophy /></el-icon>
-            </div>
-            <div class="stat-content">
-              <div class="stat-number">{{ page.total }}</div>
-              <div class="stat-label">总奖项数</div>
-            </div>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="stat-card card-shadow">
-            <div class="stat-icon" style="background: linear-gradient(135deg, #409EFF, #1890ff);">
-              <el-icon size="24"><Folder /></el-icon>
-            </div>
-            <div class="stat-content">
-              <div class="stat-number">{{ getTypeCount('PROJECT') }}</div>
-              <div class="stat-label">项目奖项</div>
-            </div>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="stat-card card-shadow">
-            <div class="stat-icon" style="background: linear-gradient(135deg, #52c41a, #389e0d);">
-              <el-icon size="24"><Document /></el-icon>
-            </div>
-            <div class="stat-content">
-              <div class="stat-number">{{ getTypeCount('PAPER') }}</div>
-              <div class="stat-label">论文奖项</div>
-            </div>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="stat-card card-shadow">
-            <div class="stat-icon" style="background: linear-gradient(135deg, #722ed1, #531dab);">
-              <el-icon size="24"><Reading /></el-icon>
-            </div>
-            <div class="stat-content">
-              <div class="stat-number">{{ getTypeCount('BOOK') }}</div>
-              <div class="stat-label">著作奖项</div>
-            </div>
-          </div>
-        </el-col>
-      </el-row>
-    </div>
-
-    <!-- 表格区域 -->
     <div class="table-section card-shadow">
-      <div class="table-header">
-        <div class="table-title">
-          <el-icon><List /></el-icon>
-          <span>奖项列表</span>
-        </div>
-        <div class="table-tools">
-          <el-button-group>
-            <el-button :icon="Grid" size="small">表格视图</el-button>
-            <el-button :icon="Menu" size="small">卡片视图</el-button>
-          </el-button-group>
-        </div>
-      </div>
-
       <el-table :data="list" border stripe class="award-table">
-        <el-table-column type="selection" width="55" />
-        <el-table-column label="奖项信息" min-width="200">
+        <el-table-column label="奖项信息" prop="name" min-width="200">
+  
+        </el-table-column>
+        <el-table-column label="关联类型" prop="targetType" width="120" align="center">
           <template #default="{ row }">
-            <div class="award-info">
-              <div class="award-name">
-                <el-icon color="#faad14"><Trophy /></el-icon>
-                {{ row.name }}
-              </div>
-              <div class="award-meta">
-                <el-tag size="small" :type="getTypeTagType(row.targetType)">
-                  {{ getTypeLabel(row.targetType) }}
-                </el-tag>
-              </div>
-            </div>
+            <el-tag :type="getTypeTagType(row.targetType)">
+              {{ getTypeLabel(row.targetType) }}
+            </el-tag>
           </template>
         </el-table-column>
 
@@ -196,7 +117,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" width="200" fixed="right">
+        <el-table-column label="操作" width="230" fixed="right">
           <template #default="{ row }">
             <div class="action-buttons">
               <el-button link type="primary" @click="edit(row)" :icon="Edit">
@@ -213,7 +134,6 @@
         </el-table-column>
       </el-table>
 
-      <!-- 分页 -->
       <div class="pagination-wrapper">
         <el-pagination
           background
@@ -235,7 +155,6 @@
       @success="loadData"
     />
 
-    <!-- 详情弹窗 -->
     <el-dialog
       v-model="detailVisible"
       title="奖项详情"
@@ -299,10 +218,6 @@ import {
   Document, 
   Reading, 
   Refresh, 
-  Download,
-  List,
-  Grid,
-  Menu,
   Medal,
   Calendar,
   Edit,
@@ -310,33 +225,25 @@ import {
   Delete
 } from '@element-plus/icons-vue';
 
-/** 查询条件 */
 const query = reactive({
   name: "",
   targetType: ""
 });
 
-/** 列表数据 */
 const list = ref([]);
 
-/** 弹窗 */
 const dialogVisible = ref(false);
 const detailVisible = ref(false);
 const currentRow = ref(null);
 
-/** 分页 */
 const page = reactive({
   pageNum: 1,
   pageSize: 10,
   total: 0
 });
 
-// 计算不同类型的奖项数量
-const getTypeCount = (type) => {
-  return list.value.filter(item => item.targetType === type).length;
-};
 
-// 获取类型标签样式
+
 const getTypeTagType = (type) => {
   switch (type) {
     case 'PROJECT': return '';
@@ -346,7 +253,6 @@ const getTypeTagType = (type) => {
   }
 };
 
-// 获取类型标签文本
 const getTypeLabel = (type) => {
   switch (type) {
     case 'PROJECT': return '项目';
@@ -356,13 +262,11 @@ const getTypeLabel = (type) => {
   }
 };
 
-/** 加载第一页 */
 const loadFirstPage = () => {
   page.pageNum = 1;
   loadData();
 };
 
-/** 加载数据 */
 const loadData = async () => {
   const res = await getAwardPage({
     pageNum: page.pageNum,
@@ -375,32 +279,27 @@ const loadData = async () => {
   page.total = res.data.total;
 };
 
-/** 重置 */
 const reset = () => {
   query.name = "";
   query.targetType = "";
   loadFirstPage();
 };
 
-/** 新增 */
 const add = () => {
   currentRow.value = null;
   dialogVisible.value = true;
 };
 
-/** 编辑 */
 const edit = (row) => {
   currentRow.value = { ...row };
   dialogVisible.value = true;
 };
 
-/** 查看详情 */
 const viewDetail = (row) => {
   currentRow.value = { ...row };
   detailVisible.value = true;
 };
 
-/** 删除 */
 const remove = async (row) => {
   try {
     await ElMessageBox.confirm(

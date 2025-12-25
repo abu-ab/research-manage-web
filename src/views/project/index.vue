@@ -1,6 +1,5 @@
 <template>
   <div class="page-container">
-    <!-- 页面头部 -->
     <div class="page-header card-shadow">
       <div class="header-content">
         <div class="header-left">
@@ -21,26 +20,21 @@
       </div>
     </div>
 
-    <!-- 搜索区域 -->
     <div class="search-section card-shadow">
-      <div class="search-header">
-        <el-icon><Search /></el-icon>
-        <span>搜索筛选</span>
-      </div>
       <div class="search-form">
         <el-row :gutter="16">
           <el-col :span="6">
-            <el-input 
-              v-model="query.name" 
-              placeholder="项目名称" 
+            <el-input
+              v-model="query.name"
+              placeholder="项目名称"
               clearable
               :prefix-icon="Document"
             />
           </el-col>
           <el-col :span="6">
-            <el-input 
-              v-model="query.code" 
-              placeholder="项目编号" 
+            <el-input
+              v-model="query.code"
+              placeholder="项目编号"
               clearable
               :prefix-icon="Key"
             />
@@ -50,117 +44,33 @@
               <el-button type="primary" @click="loadFirstPage" :icon="Search">
                 查询
               </el-button>
-              <el-button @click="reset" :icon="Refresh">
-                重置
-              </el-button>
-              <el-button type="success" :icon="Download">
-                导出
-              </el-button>
+              <el-button @click="reset" :icon="Refresh"> 重置 </el-button>
             </div>
           </el-col>
         </el-row>
       </div>
     </div>
 
-    <!-- 统计卡片 -->
-    <div class="stats-section">
-      <el-row :gutter="16">
-        <el-col :span="6">
-          <div class="stat-card card-shadow">
-            <div class="stat-icon" style="background: linear-gradient(135deg, #409EFF, #1890ff);">
-              <el-icon size="24"><Folder /></el-icon>
-            </div>
-            <div class="stat-content">
-              <div class="stat-number">{{ page.total }}</div>
-              <div class="stat-label">总项目数</div>
-            </div>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="stat-card card-shadow">
-            <div class="stat-icon" style="background: linear-gradient(135deg, #52c41a, #389e0d);">
-              <el-icon size="24"><SuccessFilled /></el-icon>
-            </div>
-            <div class="stat-content">
-              <div class="stat-number">{{ getStatusCount(1) }}</div>
-              <div class="stat-label">进行中</div>
-            </div>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="stat-card card-shadow">
-            <div class="stat-icon" style="background: linear-gradient(135deg, #faad14, #d48806);">
-              <el-icon size="24"><Clock /></el-icon>
-            </div>
-            <div class="stat-content">
-              <div class="stat-number">{{ getStatusCount(2) }}</div>
-              <div class="stat-label">即将结束</div>
-            </div>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="stat-card card-shadow">
-            <div class="stat-icon" style="background: linear-gradient(135deg, #f5222d, #cf1322);">
-              <el-icon size="24"><CircleCheckFilled /></el-icon>
-            </div>
-            <div class="stat-content">
-              <div class="stat-number">{{ getStatusCount(3) }}</div>
-              <div class="stat-label">已完成</div>
-            </div>
-          </div>
-        </el-col>
-      </el-row>
-    </div>
-
-    <!-- 表格区域 -->
     <div class="table-section card-shadow">
-      <div class="table-header">
-        <div class="table-title">
-          <el-icon><List /></el-icon>
-          <span>项目列表</span>
-        </div>
-        <div class="table-tools">
-          <el-button-group>
-            <el-button :icon="Grid" size="small">表格视图</el-button>
-            <el-button :icon="Menu" size="small">卡片视图</el-button>
-          </el-button-group>
-        </div>
-      </div>
-
       <el-table :data="list" border stripe class="project-table">
-        <el-table-column type="selection" width="55" />
-        <el-table-column label="项目信息" min-width="200">
-          <template #default="{ row }">
-            <div class="project-info">
-              <div class="project-name">{{ row.name }}</div>
-              <div class="project-code">编号：{{ row.code }}</div>
-            </div>
-          </template>
+        <el-table-column label="项目信息" prop="name" min-width="200">
         </el-table-column>
+        <el-table-column label="项目编号" prop="code" width="150" />
         <el-table-column label="项目性质" prop="type" width="120" />
         <el-table-column label="负责人" prop="leader" width="100" />
-        <el-table-column label="参与人数" prop="memberCount" width="100" align="center">
-          <template #default="{ row }">
-            <el-tag type="info" size="small">{{ row.memberCount }}人</el-tag>
-          </template>
+        <el-table-column label="参与人数" prop="memberCount" width="100">
         </el-table-column>
-        <el-table-column label="项目周期" width="120" align="center">
-          <template #default="{ row }">
-            <div class="duration-info">
-              <el-icon><Timer /></el-icon>
-              <span>{{ row.duration }}天</span>
-            </div>
-          </template>
+        <el-table-column label="项目周期" prop="duration" width="120">
         </el-table-column>
         <el-table-column label="创建时间" prop="createTime" width="120">
           <template #default="{ row }">
             {{ formatDate(row.createTime) }}
           </template>
         </el-table-column>
-        <el-table-column label="项目状态" width="120" align="center">
+        <el-table-column label="项目状态" width="120">
           <template #default="{ row }">
-            <el-tag 
-              :type="statusTagType(row.status)" 
+            <el-tag
+              :type="statusTagType(row.status)"
               effect="light"
               :icon="getStatusIcon(row.status)"
             >
@@ -168,7 +78,7 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="200" fixed="right">
+        <el-table-column label="操作" width="230" fixed="right">
           <template #default="{ row }">
             <div class="action-buttons">
               <el-button link type="primary" @click="edit(row)" :icon="Edit">
@@ -185,7 +95,6 @@
         </el-table-column>
       </el-table>
 
-      <!-- 分页 -->
       <div class="pagination-wrapper">
         <el-pagination
           background
@@ -200,19 +109,17 @@
       </div>
     </div>
 
-    <!-- 弹窗 -->
     <ProjectDialog
       v-model="dialogVisible"
       :data="currentRow"
       @success="loadData"
     />
 
-    <!-- 详情弹窗 -->
     <el-dialog
       v-model="detailVisible"
       title="项目详情"
       width="800px"
-      :before-close="() => detailVisible = false"
+      :before-close="() => (detailVisible = false)"
     >
       <div v-if="currentRow" class="detail-content">
         <el-descriptions :column="2" border>
@@ -235,10 +142,7 @@
             {{ currentRow.duration }}天
           </el-descriptions-item>
           <el-descriptions-item label="项目状态">
-            <el-tag 
-              :type="statusTagType(currentRow.status)" 
-              effect="light"
-            >
+            <el-tag :type="statusTagType(currentRow.status)" effect="light">
               {{ PROJECT_STATUS_MAP[currentRow.status] }}
             </el-tag>
           </el-descriptions-item>
@@ -246,7 +150,7 @@
             {{ formatDate(currentRow.createTime) }}
           </el-descriptions-item>
           <el-descriptions-item label="项目描述" :span="2">
-            {{ currentRow.description || '暂无描述' }}
+            {{ currentRow.description || "暂无描述" }}
           </el-descriptions-item>
         </el-descriptions>
       </div>
@@ -259,31 +163,24 @@
 </template>
 
 <script setup>
-import { reactive, ref, onMounted, computed } from "vue";
+import { reactive, ref, onMounted } from "vue";
 import { ElMessageBox, ElMessage } from "element-plus";
 import ProjectDialog from "./ProjectDialog.vue";
 import { getProjectPage, deleteProject } from "@/api/project";
 import { formatDate } from "@/utils/format";
 import { PROJECT_STATUS_MAP } from "@/constants/projectStatus";
-import { 
-  Folder, 
-  Plus, 
-  Search, 
-  Document, 
-  Key, 
-  Refresh, 
-  Download,
-  SuccessFilled,
-  Clock,
-  CircleCheckFilled,
-  List,
-  Grid,
-  Menu,
+import {
+  Folder,
+  Plus,
+  Search,
+  Document,
+  Key,
+  Refresh,
   Timer,
   Edit,
   View,
-  Delete
-} from '@element-plus/icons-vue';
+  Delete,
+} from "@element-plus/icons-vue";
 
 const query = reactive({
   name: "",
@@ -302,17 +199,22 @@ const page = reactive({
 
 // 计算不同状态的项目数量
 const getStatusCount = (status) => {
-  return list.value.filter(item => item.status === status).length;
+  return list.value.filter((item) => item.status === status).length;
 };
 
 // 获取状态图标
 const getStatusIcon = (status) => {
   switch (status) {
-    case 0: return 'Clock';
-    case 1: return 'SuccessFilled';
-    case 2: return 'Warning';
-    case 3: return 'CircleCheckFilled';
-    default: return 'InfoFilled';
+    case 0:
+      return "Clock";
+    case 1:
+      return "SuccessFilled";
+    case 2:
+      return "Warning";
+    case 3:
+      return "CircleCheckFilled";
+    default:
+      return "InfoFilled";
   }
 };
 
@@ -571,11 +473,11 @@ onMounted(loadData);
     gap: 16px;
     align-items: flex-start;
   }
-  
+
   .search-form .el-col {
     margin-bottom: 12px;
   }
-  
+
   .stats-section .el-col {
     margin-bottom: 12px;
   }

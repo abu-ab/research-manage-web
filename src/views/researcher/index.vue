@@ -1,6 +1,5 @@
 <template>
   <div class="page-container">
-    <!-- 页面头部 -->
     <div class="page-header card-shadow">
       <div class="header-content">
         <div class="header-left">
@@ -21,26 +20,21 @@
       </div>
     </div>
 
-    <!-- 搜索区域 -->
     <div class="search-section card-shadow">
-      <div class="search-header">
-        <el-icon><Search /></el-icon>
-        <span>搜索筛选</span>
-      </div>
       <div class="search-form">
         <el-row :gutter="16">
           <el-col :span="6">
-            <el-input 
-              v-model="query.name" 
-              placeholder="姓名" 
+            <el-input
+              v-model="query.name"
+              placeholder="姓名"
               clearable
               :prefix-icon="User"
             />
           </el-col>
           <el-col :span="6">
-            <el-input 
-              v-model="query.code" 
-              placeholder="工号" 
+            <el-input
+              v-model="query.code"
+              placeholder="工号"
               clearable
               :prefix-icon="Key"
             />
@@ -50,100 +44,17 @@
               <el-button type="primary" @click="loadFirstPage" :icon="Search">
                 查询
               </el-button>
-              <el-button @click="reset" :icon="Refresh">
-                重置
-              </el-button>
-              <el-button type="success" :icon="Download">
-                导出
-              </el-button>
+              <el-button @click="reset" :icon="Refresh"> 重置 </el-button>
             </div>
           </el-col>
         </el-row>
       </div>
     </div>
 
-    <!-- 统计卡片 -->
-    <div class="stats-section">
-      <el-row :gutter="16">
-        <el-col :span="6">
-          <div class="stat-card card-shadow">
-            <div class="stat-icon" style="background: linear-gradient(135deg, #52c41a, #389e0d);">
-              <el-icon size="24"><User /></el-icon>
-            </div>
-            <div class="stat-content">
-              <div class="stat-number">{{ page.total }}</div>
-              <div class="stat-label">总人员数</div>
-            </div>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="stat-card card-shadow">
-            <div class="stat-icon" style="background: linear-gradient(135deg, #1890ff, #096dd9);">
-              <el-icon size="24"><Star /></el-icon>
-            </div>
-            <div class="stat-content">
-              <div class="stat-number">{{ getProfessorCount() }}</div>
-              <div class="stat-label">教授人数</div>
-            </div>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="stat-card card-shadow">
-            <div class="stat-icon" style="background: linear-gradient(135deg, #722ed1, #531dab);">
-              <el-icon size="24"><UserFilled /></el-icon>
-            </div>
-            <div class="stat-content">
-              <div class="stat-number">{{ getAssociateProfessorCount() }}</div>
-              <div class="stat-label">副教授人数</div>
-            </div>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="stat-card card-shadow">
-            <div class="stat-icon" style="background: linear-gradient(135deg, #faad14, #d48806);">
-              <el-icon size="24"><Avatar /></el-icon>
-            </div>
-            <div class="stat-content">
-              <div class="stat-number">{{ getLecturerCount() }}</div>
-              <div class="stat-label">讲师人数</div>
-            </div>
-          </div>
-        </el-col>
-      </el-row>
-    </div>
-
-    <!-- 表格区域 -->
     <div class="table-section card-shadow">
-      <div class="table-header">
-        <div class="table-title">
-          <el-icon><List /></el-icon>
-          <span>人员列表</span>
-        </div>
-        <div class="table-tools">
-          <el-button-group>
-            <el-button :icon="Grid" size="small">表格视图</el-button>
-            <el-button :icon="Menu" size="small">卡片视图</el-button>
-          </el-button-group>
-        </div>
-      </div>
-
       <el-table :data="list" border stripe class="researcher-table">
-        <el-table-column type="selection" width="55" />
-        <el-table-column label="人员信息" min-width="200">
-          <template #default="{ row }">
-            <div class="researcher-info">
-              <div class="researcher-avatar">
-                <el-avatar :size="40" class="avatar">
-                  <el-icon><User /></el-icon>
-                </el-avatar>
-              </div>
-              <div class="researcher-details">
-                <div class="researcher-name">{{ row.name }}</div>
-                <div class="researcher-code">工号：{{ row.code }}</div>
-              </div>
-            </div>
-          </template>
-        </el-table-column>
+        <el-table-column label="人员信息" prop="name"> </el-table-column>
+        <el-table-column label="工号" prop="code" width="120" />
         <el-table-column label="学院" prop="college" width="180">
           <template #default="{ row }">
             <div class="college-info">
@@ -152,7 +63,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="职称" prop="title" width="120" align="center">
+        <el-table-column label="职称" prop="title" width="120">
           <template #default="{ row }">
             <el-tag :type="getTitleTagType(row.title)" effect="light">
               {{ row.title }}
@@ -167,15 +78,8 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="入职时间" prop="joinDate" width="120" align="center">
-          <template #default="{ row }">
-            <div class="join-date">
-              <el-icon><Calendar /></el-icon>
-              <span>{{ formatDate(row.joinDate) }}</span>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" width="200" fixed="right">
+   
+        <el-table-column label="操作" width="230" fixed="right">
           <template #default="{ row }">
             <div class="action-buttons">
               <el-button link type="primary" @click="edit(row)" :icon="Edit">
@@ -192,7 +96,6 @@
         </el-table-column>
       </el-table>
 
-      <!-- 分页 -->
       <div class="pagination-wrapper">
         <el-pagination
           background
@@ -207,19 +110,17 @@
       </div>
     </div>
 
-    <!-- 弹窗 -->
     <ResearcherDialog
       v-model="dialogVisible"
       :data="currentRow"
       @success="loadData"
     />
 
-    <!-- 详情弹窗 -->
     <el-dialog
       v-model="detailVisible"
       title="人员详情"
       width="700px"
-      :before-close="() => detailVisible = false"
+      :before-close="() => (detailVisible = false)"
     >
       <div v-if="currentRow" class="detail-content">
         <div class="researcher-profile">
@@ -231,7 +132,7 @@
             <p>{{ currentRow.title }} · {{ currentRow.college }}</p>
           </div>
         </div>
-        
+
         <el-descriptions :column="2" border class="detail-descriptions">
           <el-descriptions-item label="姓名">
             {{ currentRow.name }}
@@ -254,10 +155,10 @@
             {{ formatDate(currentRow.joinDate) }}
           </el-descriptions-item>
           <el-descriptions-item label="邮箱地址" :span="2">
-            {{ currentRow.email || '暂未填写' }}
+            {{ currentRow.email || "暂未填写" }}
           </el-descriptions-item>
           <el-descriptions-item label="个人简介" :span="2">
-            {{ currentRow.bio || '暂无个人简介' }}
+            {{ currentRow.bio || "暂无个人简介" }}
           </el-descriptions-item>
         </el-descriptions>
       </div>
@@ -275,26 +176,20 @@ import ResearcherDialog from "./ResearcherDialog.vue";
 import { ElMessageBox, ElMessage } from "element-plus";
 import { getResearcherPage, deleteResearcher } from "@/api/researcher";
 import { formatDate } from "@/utils/format";
-import { 
-  User, 
-  Plus, 
-  Search, 
-  Key, 
-  Refresh, 
-  Download,
-  Star,
-  UserFilled,
-  Avatar,
-  List,
-  Grid,
-  Menu,
+import {
+  User,
+  Plus,
+  Search,
+  Key,
+  Refresh,
   School,
   Phone,
   Calendar,
   Edit,
   View,
-  Delete
-} from '@element-plus/icons-vue';
+  Delete,
+} from "@element-plus/icons-vue";
+import { el } from "element-plus/es/locales.mjs";
 
 const query = reactive({
   name: "",
@@ -311,27 +206,18 @@ const page = reactive({
   total: 0,
 });
 
-// 计算不同职称的人数
-const getProfessorCount = () => {
-  return list.value.filter(item => item.title === '教授').length;
-};
-
-const getAssociateProfessorCount = () => {
-  return list.value.filter(item => item.title === '副教授').length;
-};
-
-const getLecturerCount = () => {
-  return list.value.filter(item => item.title === '讲师').length;
-};
-
-// 获取职称标签类型
 const getTitleTagType = (title) => {
   switch (title) {
-    case '教授': return '';
-    case '副教授': return 'success';
-    case '讲师': return 'warning';
-    case '助教': return 'info';
-    default: return 'info';
+    case "教授":
+      return "";
+    case "副教授":
+      return "success";
+    case "讲师":
+      return "warning";
+    case "助教":
+      return "info";
+    default:
+      return "info";
   }
 };
 
@@ -588,15 +474,15 @@ onMounted(loadData);
     gap: 16px;
     align-items: flex-start;
   }
-  
+
   .search-form .el-col {
     margin-bottom: 12px;
   }
-  
+
   .stats-section .el-col {
     margin-bottom: 12px;
   }
-  
+
   .researcher-info {
     flex-direction: column;
     align-items: flex-start;

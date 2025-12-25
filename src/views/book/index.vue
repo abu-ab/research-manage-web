@@ -23,24 +23,20 @@
 
     <!-- 搜索区域 -->
     <div class="search-section card-shadow">
-      <div class="search-header">
-        <el-icon><Search /></el-icon>
-        <span>搜索筛选</span>
-      </div>
       <div class="search-form">
         <el-row :gutter="16">
           <el-col :span="6">
-            <el-input 
-              v-model="query.name" 
-              placeholder="书名" 
+            <el-input
+              v-model="query.name"
+              placeholder="书名"
               clearable
               :prefix-icon="Reading"
             />
           </el-col>
           <el-col :span="6">
-            <el-input 
-              v-model="query.author" 
-              placeholder="作者" 
+            <el-input
+              v-model="query.author"
+              placeholder="作者"
               clearable
               :prefix-icon="User"
             />
@@ -50,86 +46,18 @@
               <el-button type="primary" @click="loadFirstPage" :icon="Search">
                 查询
               </el-button>
-              <el-button @click="reset" :icon="Refresh">
-                重置
-              </el-button>
-              <el-button type="success" :icon="Download">
-                导出
-              </el-button>
+              <el-button @click="reset" :icon="Refresh"> 重置 </el-button>
             </div>
           </el-col>
         </el-row>
       </div>
     </div>
 
-    <!-- 统计卡片 -->
-    <div class="stats-section">
-      <el-row :gutter="16">
-        <el-col :span="8">
-          <div class="stat-card card-shadow">
-            <div class="stat-icon" style="background: linear-gradient(135deg, #52c41a, #389e0d);">
-              <el-icon size="24"><Reading /></el-icon>
-            </div>
-            <div class="stat-content">
-              <div class="stat-number">{{ page.total }}</div>
-              <div class="stat-label">总著作数</div>
-            </div>
-          </div>
-        </el-col>
-        <el-col :span="8">
-          <div class="stat-card card-shadow">
-            <div class="stat-icon" style="background: linear-gradient(135deg, #1890ff, #096dd9);">
-              <el-icon size="24"><User /></el-icon>
-            </div>
-            <div class="stat-content">
-              <div class="stat-number">{{ getUniqueAuthors() }}</div>
-              <div class="stat-label">作者数量</div>
-            </div>
-          </div>
-        </el-col>
-        <el-col :span="8">
-          <div class="stat-card card-shadow">
-            <div class="stat-icon" style="background: linear-gradient(135deg, #722ed1, #531dab);">
-            </div>
-            <div class="stat-content">
-              <div class="stat-number">{{ getUniquePublishers() }}</div>
-              <div class="stat-label">出版社数</div>
-            </div>
-          </div>
-        </el-col>
-      </el-row>
-    </div>
-
-    <!-- 表格区域 -->
     <div class="table-section card-shadow">
-      <div class="table-header">
-        <div class="table-title">
-          <el-icon><List /></el-icon>
-          <span>著作列表</span>
-        </div>
-        <div class="table-tools">
-          <el-button-group>
-            <el-button :icon="Grid" size="small">表格视图</el-button>
-            <el-button :icon="Menu" size="small">卡片视图</el-button>
-          </el-button-group>
-        </div>
-      </div>
-
       <el-table :data="list" border stripe class="book-table">
-        <el-table-column type="selection" width="55" />
-        <el-table-column label="著作信息" min-width="250">
-          <template #default="{ row }">
-            <div class="book-info">
-              <div class="book-title">
-                <el-icon color="#52c41a"><Reading /></el-icon>
-                {{ row.name }}
-              </div>
-              <div class="book-meta">
-                <span class="author">作者：{{ row.author }}</span>
-              </div>
-            </div>
-          </template>
+        <el-table-column label="著作信息" prop="name" min-width="250">
         </el-table-column>
+        <el-table-column label="作者" prop="author"></el-table-column>
         <el-table-column label="出版社" prop="publisher" width="180">
           <template #default="{ row }">
             <div class="publisher-info">
@@ -137,7 +65,13 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="出版时间" prop="publishDate" width="120" align="center">
+        <el-table-column label="ISBN" prop="isbn" width="150" />
+        <el-table-column
+          label="出版时间"
+          prop="publishDate"
+          width="120"
+          align="center"
+        >
           <template #default="{ row }">
             <div class="publish-date">
               <el-icon><Calendar /></el-icon>
@@ -145,7 +79,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="200" fixed="right">
+        <el-table-column label="操作" width="230" fixed="right">
           <template #default="{ row }">
             <div class="action-buttons">
               <el-button link type="primary" @click="edit(row)" :icon="Edit">
@@ -162,7 +96,6 @@
         </el-table-column>
       </el-table>
 
-      <!-- 分页 -->
       <div class="pagination-wrapper">
         <el-pagination
           background
@@ -177,19 +110,17 @@
       </div>
     </div>
 
-    <!-- 弹窗 -->
     <BookDialog
       v-model="dialogVisible"
       :data="currentRow"
       @success="loadData"
     />
 
-    <!-- 详情弹窗 -->
     <el-dialog
       v-model="detailVisible"
       title="著作详情"
       width="800px"
-      :before-close="() => detailVisible = false"
+      :before-close="() => (detailVisible = false)"
     >
       <div v-if="currentRow" class="detail-content">
         <el-descriptions :column="2" border>
@@ -206,16 +137,16 @@
             {{ currentRow.publishDate }}
           </el-descriptions-item>
           <el-descriptions-item label="ISBN">
-            {{ currentRow.isbn || '暂无' }}
+            {{ currentRow.isbn || "暂无" }}
           </el-descriptions-item>
           <el-descriptions-item label="页数">
-            {{ currentRow.pages || '暂无' }}页
+            {{ currentRow.pages || "暂无" }}页
           </el-descriptions-item>
           <el-descriptions-item label="价格">
-            {{ currentRow.price ? `¥${currentRow.price}` : '暂无' }}
+            {{ currentRow.price ? `¥${currentRow.price}` : "暂无" }}
           </el-descriptions-item>
           <el-descriptions-item label="著作简介" :span="2">
-            {{ currentRow.description || '暂无简介' }}
+            {{ currentRow.description || "暂无简介" }}
           </el-descriptions-item>
         </el-descriptions>
       </div>
@@ -232,25 +163,21 @@ import { reactive, ref, onMounted, computed } from "vue";
 import BookDialog from "./BookDialog.vue";
 import { getBookPage, deleteBook } from "@/api/book";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { 
-  Reading, 
-  Plus, 
-  Search, 
-  User, 
-  Refresh, 
-  Download,
-  List,
-  Grid,
-  Menu,
+import {
+  Reading,
+  Plus,
+  Search,
+  User,
+  Refresh,
   Calendar,
   Edit,
   View,
-  Delete
-} from '@element-plus/icons-vue';
+  Delete,
+} from "@element-plus/icons-vue";
 
 const query = reactive({
   name: "",
-  author: ""
+  author: "",
 });
 
 const list = ref([]);
@@ -261,82 +188,57 @@ const currentRow = ref(null);
 const page = reactive({
   pageNum: 1,
   pageSize: 10,
-  total: 0
+  total: 0,
 });
 
-// 计算唯一作者数量
-const getUniqueAuthors = () => {
-  const authors = new Set(list.value.map(item => item.author));
-  return authors.size;
-};
-
-// 计算唯一出版社数量
-const getUniquePublishers = () => {
-  const publishers = new Set(list.value.map(item => item.publisher));
-  return publishers.size;
-};
-
-// 加载第一页
 const loadFirstPage = () => {
   page.pageNum = 1;
   loadData();
 };
 
-// 加载数据
 const loadData = async () => {
   const res = await getBookPage({
     pageNum: page.pageNum,
     pageSize: page.pageSize,
     name: query.name,
-    author: query.author
+    author: query.author,
   });
   list.value = res.data.records;
   page.total = res.data.total;
 };
 
-// 重置
 const reset = () => {
   query.name = "";
   query.author = "";
   loadFirstPage();
 };
 
-// 新增
 const add = () => {
   currentRow.value = null;
   dialogVisible.value = true;
 };
 
-// 编辑
 const edit = (row) => {
   currentRow.value = { ...row };
   dialogVisible.value = true;
 };
 
-// 查看详情
 const viewDetail = (row) => {
   currentRow.value = { ...row };
   detailVisible.value = true;
 };
 
-// 删除
 const remove = async (row) => {
   try {
-    await ElMessageBox.confirm(
-      `确定删除著作「${row.name}」吗？`,
-      "提示",
-      { 
-        type: "warning",
-        confirmButtonText: "确认",
-        cancelButtonText: "取消"
-      }
-    );
+    await ElMessageBox.confirm(`确定删除著作「${row.name}」吗？`, "提示", {
+      type: "warning",
+      confirmButtonText: "确认",
+      cancelButtonText: "取消",
+    });
     await deleteBook(row.id);
     ElMessage.success("删除成功");
     loadData();
-  } catch (err) {
-    // 用户取消或删除失败
-  }
+  } catch (err) {}
 };
 
 onMounted(loadData);
@@ -527,11 +429,11 @@ onMounted(loadData);
     gap: 16px;
     align-items: flex-start;
   }
-  
+
   .search-form .el-col {
     margin-bottom: 12px;
   }
-  
+
   .stats-section .el-col {
     margin-bottom: 12px;
   }

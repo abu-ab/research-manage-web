@@ -1,6 +1,5 @@
 <template>
   <div class="page-container">
-    <!-- 页面头部 -->
     <div class="page-header card-shadow">
       <div class="header-content">
         <div class="header-left">
@@ -21,34 +20,29 @@
       </div>
     </div>
 
-    <!-- 搜索区域 -->
     <div class="search-section card-shadow">
-      <div class="search-header">
-        <el-icon><Search /></el-icon>
-        <span>搜索筛选</span>
-      </div>
       <div class="search-form">
         <el-row :gutter="16">
           <el-col :span="6">
-            <el-input 
-              v-model="query.title" 
-              placeholder="论文标题" 
+            <el-input
+              v-model="query.title"
+              placeholder="论文标题"
               clearable
               :prefix-icon="Document"
             />
           </el-col>
           <el-col :span="6">
-            <el-input 
-              v-model="query.author" 
-              placeholder="作者" 
+            <el-input
+              v-model="query.author"
+              placeholder="作者"
               clearable
               :prefix-icon="User"
             />
           </el-col>
           <el-col :span="6">
-            <el-select 
-              v-model="query.source" 
-              placeholder="检索来源" 
+            <el-select
+              v-model="query.source"
+              placeholder="检索来源"
               clearable
               style="width: 100%"
             >
@@ -77,106 +71,20 @@
               <el-button type="primary" @click="loadFirstPage" :icon="Search">
                 查询
               </el-button>
-              <el-button @click="reset" :icon="Refresh">
-                重置
-              </el-button>
-              <el-button type="success" :icon="Download">
-                导出
-              </el-button>
+              <el-button @click="reset" :icon="Refresh"> 重置 </el-button>
             </div>
           </el-col>
         </el-row>
       </div>
     </div>
 
-    <!-- 统计卡片 -->
-    <div class="stats-section">
-      <el-row :gutter="16">
-        <el-col :span="6">
-          <div class="stat-card card-shadow">
-            <div class="stat-icon" style="background: linear-gradient(135deg, #722ed1, #531dab);">
-              <el-icon size="24"><Document /></el-icon>
-            </div>
-            <div class="stat-content">
-              <div class="stat-number">{{ page.total }}</div>
-              <div class="stat-label">总论文数</div>
-            </div>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="stat-card card-shadow">
-            <div class="stat-icon" style="background: linear-gradient(135deg, #f5222d, #cf1322);">
-              <el-icon size="24"><Star /></el-icon>
-            </div>
-            <div class="stat-content">
-              <div class="stat-number">{{ getSCICount() }}</div>
-              <div class="stat-label">SCI论文</div>
-            </div>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="stat-card card-shadow">
-            <div class="stat-icon" style="background: linear-gradient(135deg, #faad14, #d48806);">
-              <el-icon size="24"><Medal /></el-icon>
-            </div>
-            <div class="stat-content">
-              <div class="stat-number">{{ getEICount() }}</div>
-              <div class="stat-label">EI论文</div>
-            </div>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="stat-card card-shadow">
-            <div class="stat-icon" style="background: linear-gradient(135deg, #52c41a, #389e0d);">
-              <el-icon size="24"><Trophy /></el-icon>
-            </div>
-            <div class="stat-content">
-              <div class="stat-number">{{ getCoreCount() }}</div>
-              <div class="stat-label">核心期刊</div>
-            </div>
-          </div>
-        </el-col>
-      </el-row>
-    </div>
-
-    <!-- 表格区域 -->
     <div class="table-section card-shadow">
-      <div class="table-header">
-        <div class="table-title">
-          <el-icon><List /></el-icon>
-          <span>论文列表</span>
-        </div>
-        <div class="table-tools">
-          <el-button-group>
-            <el-button :icon="Grid" size="small">表格视图</el-button>
-            <el-button :icon="Menu" size="small">卡片视图</el-button>
-          </el-button-group>
-        </div>
-      </div>
-
       <el-table :data="list" border stripe class="paper-table">
-        <el-table-column type="selection" width="55" />
-        <el-table-column label="论文信息" min-width="300">
-          <template #default="{ row }">
-            <div class="paper-info">
-              <div class="paper-title">
-                <el-icon color="#722ed1"><Document /></el-icon>
-                {{ row.title }}
-              </div>
-              <div class="paper-meta">
-                <span class="author">作者：{{ row.author }}</span>
-                <el-tag 
-                  size="small" 
-                  :type="getSourceTagType(row.source)"
-                  style="margin-left: 8px;"
-                >
-                  {{ row.source }}
-                </el-tag>
-              </div>
-            </div>
-          </template>
+        <el-table-column label="论文信息" prop="title"> </el-table-column>
+
+        <el-table-column label="作者" prop="author" min-width="150">
         </el-table-column>
-        
+
         <el-table-column label="期刊信息" prop="journal" min-width="180">
           <template #default="{ row }">
             <div class="journal-info">
@@ -190,10 +98,15 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="检索来源" prop="source" width="120" align="center">
+        <el-table-column
+          label="检索来源"
+          prop="source"
+          width="120"
+          align="center"
+        >
           <template #default="{ row }">
-            <el-tag 
-              :type="getSourceTagType(row.source)" 
+            <el-tag
+              :type="getSourceTagType(row.source)"
               effect="light"
               size="small"
             >
@@ -202,7 +115,12 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="发表时间" prop="publishDate" width="120" align="center">
+        <el-table-column
+          label="发表时间"
+          prop="publishDate"
+          width="120"
+          align="center"
+        >
           <template #default="{ row }">
             <div class="publish-date">
               <el-icon><Calendar /></el-icon>
@@ -211,16 +129,8 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="引用次数" prop="citations" width="100" align="center">
-          <template #default="{ row }">
-            <div class="citations">
-              <el-icon><DataAnalysis /></el-icon>
-              <span>{{ row.citations || 0 }}</span>
-            </div>
-          </template>
-        </el-table-column>
 
-        <el-table-column label="操作" width="200" fixed="right">
+        <el-table-column label="操作" width="230" fixed="right">
           <template #default="{ row }">
             <div class="action-buttons">
               <el-button link type="primary" @click="edit(row)" :icon="Edit">
@@ -252,19 +162,17 @@
       </div>
     </div>
 
-    <!-- 弹窗 -->
     <PaperDialog
       v-model="dialogVisible"
       :data="currentRow"
       @success="loadData"
     />
 
-    <!-- 详情弹窗 -->
     <el-dialog
       v-model="detailVisible"
       title="论文详情"
       width="900px"
-      :before-close="() => detailVisible = false"
+      :before-close="() => (detailVisible = false)"
     >
       <div v-if="currentRow" class="detail-content">
         <div class="paper-header">
@@ -281,7 +189,7 @@
             </div>
           </div>
         </div>
-        
+
         <el-descriptions :column="2" border class="detail-descriptions">
           <el-descriptions-item label="论文标题" :span="2">
             {{ currentRow.title }}
@@ -310,14 +218,14 @@
             <el-tag type="info">{{ currentRow.citations || 0 }}次</el-tag>
           </el-descriptions-item>
           <el-descriptions-item label="DOI" :span="2">
-            {{ currentRow.doi || '暂无DOI' }}
+            {{ currentRow.doi || "暂无DOI" }}
           </el-descriptions-item>
           <el-descriptions-item label="关键词" :span="2">
-            {{ currentRow.keywords || '暂无关键词' }}
+            {{ currentRow.keywords || "暂无关键词" }}
           </el-descriptions-item>
           <el-descriptions-item label="摘要" :span="2">
             <div class="abstract-content">
-              {{ currentRow.abstract || '暂无摘要' }}
+              {{ currentRow.abstract || "暂无摘要" }}
             </div>
           </el-descriptions-item>
         </el-descriptions>
@@ -335,25 +243,18 @@ import { reactive, ref, onMounted } from "vue";
 import PaperDialog from "./PaperDialog.vue";
 import { ElMessageBox, ElMessage } from "element-plus";
 import { getPaperPage, deletePaper } from "@/api/paper";
-import { 
-  Document, 
-  Plus, 
-  Search, 
-  User, 
-  Refresh, 
-  Download,
-  Star,
-  Medal,
-  Trophy,
-  List,
-  Grid,
-  Menu,
+import {
+  Document,
+  Plus,
+  Search,
+  User,
+  Refresh,
   Calendar,
   DataAnalysis,
   Edit,
   View,
-  Delete
-} from '@element-plus/icons-vue';
+  Delete,
+} from "@element-plus/icons-vue";
 
 const query = reactive({
   title: "",
@@ -372,36 +273,36 @@ const page = reactive({
   total: 0,
 });
 
-// 计算不同检索来源的论文数量
 const getSCICount = () => {
-  return list.value.filter(item => item.source === 'SCI').length;
+  return list.value.filter((item) => item.source === "SCI").length;
 };
 
 const getEICount = () => {
-  return list.value.filter(item => item.source === 'EI').length;
+  return list.value.filter((item) => item.source === "EI").length;
 };
 
 const getCoreCount = () => {
-  return list.value.filter(item => item.source === 'CORE').length;
+  return list.value.filter((item) => item.source === "CORE").length;
 };
 
-// 获取检索来源标签类型
 const getSourceTagType = (source) => {
   switch (source) {
-    case 'SCI': return 'danger';
-    case 'EI': return 'warning';
-    case 'CORE': return 'success';
-    default: return 'info';
+    case "SCI":
+      return "danger";
+    case "EI":
+      return "warning";
+    case "CORE":
+      return "success";
+    default:
+      return "info";
   }
 };
 
-// 加载第一页
 const loadFirstPage = () => {
   page.pageNum = 1;
   loadData();
 };
 
-// 加载数据
 const loadData = async () => {
   const res = await getPaperPage({
     pageNum: page.pageNum,
@@ -414,7 +315,6 @@ const loadData = async () => {
   page.total = res.data.total;
 };
 
-// 重置查询条件
 const reset = () => {
   query.title = "";
   query.author = "";
@@ -422,36 +322,28 @@ const reset = () => {
   loadFirstPage();
 };
 
-// 新增
 const add = () => {
   currentRow.value = null;
   dialogVisible.value = true;
 };
 
-// 编辑
 const edit = (row) => {
   currentRow.value = { ...row };
   dialogVisible.value = true;
 };
 
-// 查看详情
 const viewDetail = (row) => {
   currentRow.value = { ...row };
   detailVisible.value = true;
 };
 
-// 删除
 const remove = async (row) => {
   try {
-    await ElMessageBox.confirm(
-      `确定删除论文「${row.title}」吗？`,
-      "提示",
-      { 
-        type: "warning",
-        confirmButtonText: "确认",
-        cancelButtonText: "取消"
-      }
-    );
+    await ElMessageBox.confirm(`确定删除论文「${row.title}」吗？`, "提示", {
+      type: "warning",
+      confirmButtonText: "确认",
+      cancelButtonText: "取消",
+    });
     await deletePaper(row.id);
     ElMessage.success("删除成功");
     loadData();
@@ -679,19 +571,19 @@ onMounted(loadData);
     gap: 16px;
     align-items: flex-start;
   }
-  
+
   .search-form .el-col {
     margin-bottom: 12px;
   }
-  
+
   .stats-section .el-col {
     margin-bottom: 12px;
   }
-  
+
   .paper-title {
     font-size: 14px;
   }
-  
+
   .paper-meta {
     flex-direction: column;
     align-items: flex-start;
