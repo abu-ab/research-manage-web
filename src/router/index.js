@@ -70,16 +70,14 @@ const routes = [
           {
             path: '',
             component: () => import('@/views/dictionary/index.vue')
-          },
-          {
-            path: 'edit',
-            component: () => import('@/views/dictionary/edit.vue')
-          },
-          {
-            path: 'edit/:id',
-            component: () => import('@/views/dictionary/edit.vue')
           }
         ]
+      },
+      {
+        path: "/change-password",
+        name: "ChangePassword",
+        component: () => import('@/views/user/changePasswordPage.vue'),
+        meta: { requiresAuth: true }
       }
     ]
   },
@@ -89,5 +87,15 @@ const router = createRouter({
   history: createWebHistory(),
   routes
 })
+
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem("token");
+
+  if (to.path !== "/login" && !token) {
+    next("/login");
+  } else {
+    next();
+  }
+});
 
 export default router

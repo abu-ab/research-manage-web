@@ -38,8 +38,18 @@
       <!-- 顶栏 -->
       <el-header class="bg-white border-b flex items-center justify-between">
         <div class="text-base font-medium">高校科研管理系统</div>
-
-        <el-button size="small" type="danger"> 退出登录 </el-button>
+        <div>
+          <el-button
+            size="small"
+            type="primary"
+            @click="$router.push('/change-password')"
+          >
+            修改密码
+          </el-button>
+          <el-button size="small" type="danger" @click="logout">
+            退出登录
+          </el-button>
+        </div>
       </el-header>
 
       <!-- 主体 -->
@@ -51,4 +61,10 @@
 </template>
 
 <script setup>
+import { useRouter } from "vue-router";
+const router = useRouter();
+const logout = () => {
+  localStorage.removeItem("token");
+  router.push("/login");
+};
 </script>
