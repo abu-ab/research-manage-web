@@ -63,9 +63,7 @@
               <el-button type="primary" @click="loadFirstPage" :icon="Search">
                 查询
               </el-button>
-              <el-button @click="reset" :icon="Refresh">
-                重置
-              </el-button>
+              <el-button @click="reset" :icon="Refresh"> 重置 </el-button>
             </div>
           </el-col>
         </el-row>
@@ -75,9 +73,13 @@
     <div class="table-section card-shadow">
       <el-table :data="list" border stripe class="award-table">
         <el-table-column label="奖项信息" prop="name" min-width="200">
-  
         </el-table-column>
-        <el-table-column label="关联类型" prop="targetType" width="120" align="center">
+        <el-table-column
+          label="关联类型"
+          prop="targetType"
+          width="120"
+          align="center"
+        >
           <template #default="{ row }">
             <el-tag :type="getTypeTagType(row.targetType)">
               {{ getTypeLabel(row.targetType) }}
@@ -85,17 +87,29 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="奖项级别" prop="level" width="120" align="center">
+        <el-table-column
+          label="奖项级别"
+          prop="level"
+          width="120"
+          align="center"
+        >
           <template #default="{ row }">
-            <el-tag type="warning" effect="light">{{ row.level }}</el-tag>
+            <el-tag type="warning" effect="light">{{
+              handleLevel(row.level)
+            }}</el-tag>
           </template>
         </el-table-column>
 
-        <el-table-column label="奖项等级" prop="awardRank" width="120" align="center">
+        <el-table-column
+          label="奖项等级"
+          prop="awardRank"
+          width="120"
+          align="center"
+        >
           <template #default="{ row }">
             <div class="award-rank">
               <el-icon><Medal /></el-icon>
-              <span>{{ row.awardRank }}</span>
+              <span>{{ handleRank(row.awardRank) }}</span>
             </div>
           </template>
         </el-table-column>
@@ -108,7 +122,12 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="获奖时间" prop="awardDate" width="120" align="center">
+        <el-table-column
+          label="获奖时间"
+          prop="awardDate"
+          width="120"
+          align="center"
+        >
           <template #default="{ row }">
             <div class="award-date">
               <el-icon><Calendar /></el-icon>
@@ -159,7 +178,7 @@
       v-model="detailVisible"
       title="奖项详情"
       width="800px"
-      :before-close="() => detailVisible = false"
+      :before-close="() => (detailVisible = false)"
     >
       <div v-if="currentRow" class="detail-content">
         <el-descriptions :column="2" border>
@@ -172,7 +191,9 @@
             </el-tag>
           </el-descriptions-item>
           <el-descriptions-item label="奖项级别">
-            <el-tag type="warning" effect="light">{{ currentRow.level }}</el-tag>
+            <el-tag type="warning" effect="light">{{
+              handleLevel(currentRow.level)
+            }}</el-tag>
           </el-descriptions-item>
           <el-descriptions-item label="奖项等级">
             <div class="award-rank">
@@ -190,10 +211,10 @@
             </div>
           </el-descriptions-item>
           <el-descriptions-item label="关联对象">
-            {{ currentRow.targetName || '暂无' }}
+            {{ currentRow.targetName || "暂无" }}
           </el-descriptions-item>
           <el-descriptions-item label="奖项描述" :span="2">
-            {{ currentRow.description || '暂无描述' }}
+            {{ currentRow.description || "暂无描述" }}
           </el-descriptions-item>
         </el-descriptions>
       </div>
@@ -210,24 +231,25 @@ import { reactive, ref, onMounted } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import AwardDialog from "./AwardDialog.vue";
 import { getAwardPage, deleteAward } from "@/api/award";
-import { 
-  Trophy, 
-  Plus, 
-  Search, 
-  Folder, 
-  Document, 
-  Reading, 
-  Refresh, 
+import { getDict } from "@/api/dict";
+import {
+  Trophy,
+  Plus,
+  Search,
+  Folder,
+  Document,
+  Reading,
+  Refresh,
   Medal,
   Calendar,
   Edit,
   View,
-  Delete
-} from '@element-plus/icons-vue';
+  Delete,
+} from "@element-plus/icons-vue";
 
 const query = reactive({
   name: "",
-  targetType: ""
+  targetType: "",
 });
 
 const list = ref([]);
@@ -239,30 +261,51 @@ const currentRow = ref(null);
 const page = reactive({
   pageNum: 1,
   pageSize: 10,
-  total: 0
+  total: 0,
 });
-
-
 
 const getTypeTagType = (type) => {
   switch (type) {
-    case 'PROJECT': return '';
-    case 'PAPER': return 'success';
-    case 'BOOK': return 'warning';
-    default: return 'info';
+    case "PROJECT":
+      return "";
+    case "PAPER":
+      return "success";
+    case "BOOK":
+      return "warning";
+    default:
+      return "info";
   }
 };
 
 const getTypeLabel = (type) => {
   switch (type) {
-    case 'PROJECT': return '项目';
-    case 'PAPER': return '论文';
-    case 'BOOK': return '著作';
-    default: return '未知';
+    case "PROJECT":
+      return "项目";
+    case "PAPER":
+      return "论文";
+    case "BOOK":
+      return "著作";
+    default:
+      return "未知";
   }
 };
 
-const loadFirstPage = () => {
+const levelOptions = ref([]);
+const rankOptions = ref([]);
+
+const handleLevel = (level) => {
+  console.log(level);
+  const option = levelOptions.value.find((opt) => opt.dictCode === level);
+  console.log(option);
+  return option ? option.dictLabel : level;
+};
+
+const handleRank = (rank) => {
+  const option = rankOptions.value.find((opt) => opt.dictCode === rank);
+  return option ? option.dictLabel : rank;
+};
+
+const loadFirstPage = async () => {
   page.pageNum = 1;
   loadData();
 };
@@ -272,7 +315,7 @@ const loadData = async () => {
     pageNum: page.pageNum,
     pageSize: page.pageSize,
     name: query.name,
-    targetType: query.targetType
+    targetType: query.targetType,
   });
 
   list.value = res.data.records;
@@ -302,15 +345,11 @@ const viewDetail = (row) => {
 
 const remove = async (row) => {
   try {
-    await ElMessageBox.confirm(
-      `确定删除奖项「${row.name}」吗？`,
-      "提示",
-      { 
-        type: "warning",
-        confirmButtonText: "确认",
-        cancelButtonText: "取消"
-      }
-    );
+    await ElMessageBox.confirm(`确定删除奖项「${row.name}」吗？`, "提示", {
+      type: "warning",
+      confirmButtonText: "确认",
+      cancelButtonText: "取消",
+    });
     await deleteAward(row.id);
     ElMessage.success("删除成功");
     loadData();
@@ -319,7 +358,11 @@ const remove = async (row) => {
   }
 };
 
-onMounted(loadData);
+onMounted(async () => {
+  levelOptions.value = await getDict("AWARD_LEVEL");
+  rankOptions.value = await getDict("AWARD_RANK");
+  loadData();
+});
 </script>
 
 <style scoped>
@@ -513,11 +556,11 @@ onMounted(loadData);
     gap: 16px;
     align-items: flex-start;
   }
-  
+
   .search-form .el-col {
     margin-bottom: 12px;
   }
-  
+
   .stats-section .el-col {
     margin-bottom: 12px;
   }
