@@ -151,13 +151,15 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" width="200" fixed="right">
+        <el-table-column label="操作" width="230" fixed="right">
           <template #default="{ row }">
             <div class="action-buttons">
               <el-button link type="primary" @click="edit(row)" :icon="Edit">
                 编辑
               </el-button>
-           
+              <el-button link type="info" @click="viewDetail(row)" :icon="View">
+                详情
+              </el-button>
               <el-button link type="danger" @click="remove(row)" :icon="Delete">
                 删除
               </el-button>

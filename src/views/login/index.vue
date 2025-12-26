@@ -313,7 +313,8 @@ const handleRegister = () => {
 
 .login-box {
   width: 900px;
-  height: 520px;
+  min-height: 520px;
+  max-height: 90vh;
   background: #fff;
   display: flex;
   border-radius: 12px;
@@ -375,6 +376,7 @@ const handleRegister = () => {
   padding: 40px;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
 }
 
 .form-header {
@@ -430,7 +432,8 @@ const handleRegister = () => {
 @media (max-width: 768px) {
   .login-box {
     width: 90%;
-    height: auto;
+    min-height: auto;
+    max-height: 90vh;
     flex-direction: column;
   }
   
@@ -441,6 +444,12 @@ const handleRegister = () => {
   
   .login-left {
     padding: 30px;
+    min-height: 200px;
+  }
+  
+  .login-right {
+    max-height: 60vh;
+    overflow-y: auto;
   }
   
   .brand-content {
