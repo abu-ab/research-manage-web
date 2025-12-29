@@ -19,9 +19,9 @@
 
       <!-- 菜单 -->
       <div class="menu-container">
-        <el-menu 
-          router 
-          class="sidebar-menu" 
+        <el-menu
+          router
+          class="sidebar-menu"
           default-active="/dashboard"
           :collapse="false"
           background-color="transparent"
@@ -58,9 +58,13 @@
             <span>科研奖项</span>
           </el-menu-item>
 
-          <el-menu-item index="/dictionary" class="menu-item">
+          <el-menu-item index="/dictionary" class="menu-item" v-if="isAdmin">
             <el-icon><Setting /></el-icon>
             <span>字典管理</span>
+          </el-menu-item>
+          <el-menu-item index="/user" class="menu-item" v-if="isAdmin">
+            <el-icon><Setting /></el-icon>
+            <span>用户管理</span>
           </el-menu-item>
         </el-menu>
       </div>
@@ -84,17 +88,12 @@
             <span class="system-title">高校科研管理系统</span>
           </div>
         </div>
-        
-        <div class="header-right">
 
+        <div class="header-right">
           <el-dropdown trigger="hover" class="user-dropdown">
             <div class="user-info">
-              <el-avatar :size="32" class="user-avatar">
-                <el-icon><UserFilled /></el-icon>
-              </el-avatar>
               <div class="user-details">
-                <span class="username">管理员</span>
-                <span class="user-role">系统管理员</span>
+                <span class="user-role">{{ user.role === "ADMIN" ? "系统管理员" : "普通用户" }}</span>
               </div>
               <el-icon class="dropdown-icon"><ArrowDown /></el-icon>
             </div>
@@ -128,43 +127,41 @@
 import { useRouter } from "vue-router";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { ref } from "vue";
-import { 
-  Management, 
-  Folder, 
-  User, 
-  Document, 
-  Reading, 
-  Trophy, 
-  Setting, 
-  Location, 
-  UserFilled, 
-  ArrowDown, 
-  Key, 
+import {
+  Management,
+  Folder,
+  User,
+  Document,
+  Reading,
+  Trophy,
+  Setting,
+  Location,
+  UserFilled,
+  ArrowDown,
+  Key,
   SwitchButton,
   Odometer,
   InfoFilled,
   Bell,
-  FullScreen
-} from '@element-plus/icons-vue';
+  FullScreen,
+} from "@element-plus/icons-vue";
 
 const router = useRouter();
 
+const user = JSON.parse(localStorage.getItem("user") || "{}");
 
+const isAdmin = user.role === "ADMIN";
 
 const logout = async () => {
   try {
-    await ElMessageBox.confirm(
-      '确定要退出登录吗？',
-      '提示',
-      {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-      }
-    );
-    
+    await ElMessageBox.confirm("确定要退出登录吗？", "提示", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning",
+    });
+
     localStorage.removeItem("token");
-    ElMessage.success('退出成功');
+    ElMessage.success("退出成功");
     router.push("/login");
   } catch {
     // 用户取消
@@ -205,7 +202,7 @@ const toggleFullscreen = () => {
 .logo-icon {
   width: 40px;
   height: 40px;
-  background: linear-gradient(135deg, #1890ff, #409EFF);
+  background: linear-gradient(135deg, #1890ff, #409eff);
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -254,14 +251,14 @@ const toggleFullscreen = () => {
 
 .menu-item:hover {
   background-color: rgba(64, 158, 255, 0.1) !important;
-  color: #409EFF !important;
+  color: #409eff !important;
   transform: translateX(2px);
 }
 
 .menu-item.is-active {
   background: rgba(64, 158, 255, 0.15) !important;
   color: white !important;
-  border-left: 3px solid #409EFF;
+  border-left: 3px solid #409eff;
 }
 
 .menu-badge {
@@ -355,12 +352,16 @@ const toggleFullscreen = () => {
 
 .user-info:hover {
   background-color: #f5f7fa;
-  border-color: #409EFF;
+  border-color: #409eff;
 }
 
 .user-avatar {
   margin-right: 8px;
-  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  background: linear-gradient(
+    135deg,
+    var(--color-primary),
+    var(--color-primary-dark)
+  );
 }
 
 .user-details {
@@ -409,7 +410,7 @@ const toggleFullscreen = () => {
   .sidebar {
     width: 220px !important;
   }
-  
+
   .main-content {
     padding: 16px;
   }
@@ -419,35 +420,35 @@ const toggleFullscreen = () => {
   .sidebar {
     width: 200px !important;
   }
-  
+
   .logo-text h3 {
     font-size: 14px;
   }
-  
+
   .logo-text p {
     display: none;
   }
-  
+
   .header {
     padding: 0 16px;
   }
-  
+
   .header-left {
     gap: 16px;
   }
-  
+
   .system-title {
     font-size: 14px;
   }
-  
+
   .user-details {
     display: none;
   }
-  
+
   .main-content {
     padding: 12px;
   }
-  
+
   .menu-badge {
     display: none;
   }
@@ -457,7 +458,7 @@ const toggleFullscreen = () => {
   .sidebar {
     width: 180px !important;
   }
-  
+
   .header-actions {
     display: none;
   }

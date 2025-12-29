@@ -38,8 +38,10 @@
       <!-- 右侧表单 -->
       <div class="login-right">
         <div class="form-header">
-          <h2>{{ activeTab === 'login' ? '欢迎回来' : '创建账户' }}</h2>
-          <p>{{ activeTab === 'login' ? '请登录您的账户' : '请填写注册信息' }}</p>
+          <h2>{{ activeTab === "login" ? "欢迎回来" : "创建账户" }}</h2>
+          <p>
+            {{ activeTab === "login" ? "请登录您的账户" : "请填写注册信息" }}
+          </p>
         </div>
 
         <el-tabs v-model="activeTab" stretch class="login-tabs">
@@ -51,7 +53,7 @@
                 登录
               </span>
             </template>
-            
+
             <el-form
               ref="loginFormRef"
               :model="loginForm"
@@ -87,7 +89,7 @@
                 @click="handleLogin"
               >
                 <el-icon v-if="!loading"><Right /></el-icon>
-                {{ loading ? '登录中...' : '立即登录' }}
+                {{ loading ? "登录中..." : "立即登录" }}
               </el-button>
             </el-form>
           </el-tab-pane>
@@ -100,7 +102,7 @@
                 注册
               </span>
             </template>
-            
+
             <el-form
               ref="registerFormRef"
               :model="registerForm"
@@ -147,7 +149,7 @@
                 @click="handleRegister"
               >
                 <el-icon v-if="!loading"><Plus /></el-icon>
-                {{ loading ? '注册中...' : '立即注册' }}
+                {{ loading ? "注册中..." : "立即注册" }}
               </el-button>
             </el-form>
           </el-tab-pane>
@@ -162,15 +164,15 @@ import { ref, reactive } from "vue";
 import { ElMessage } from "element-plus";
 import { login, register } from "@/api/auth";
 import { useRouter } from "vue-router";
-import { 
-  Management, 
-  Check, 
-  User, 
-  UserFilled, 
-  Lock, 
-  Right, 
-  Plus 
-} from '@element-plus/icons-vue';
+import {
+  Management,
+  Check,
+  User,
+  UserFilled,
+  Lock,
+  Right,
+  Plus,
+} from "@element-plus/icons-vue";
 
 const router = useRouter();
 
@@ -197,6 +199,7 @@ const handleLogin = () => {
       loading.value = true;
       const res = await login(loginForm);
       localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
       ElMessage.success("登录成功");
       router.push("/");
     } catch (e) {
@@ -303,7 +306,8 @@ const handleRegister = () => {
 }
 
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px);
   }
   50% {
@@ -436,26 +440,26 @@ const handleRegister = () => {
     max-height: 90vh;
     flex-direction: column;
   }
-  
+
   .login-left,
   .login-right {
     width: 100%;
   }
-  
+
   .login-left {
     padding: 30px;
     min-height: 200px;
   }
-  
+
   .login-right {
     max-height: 60vh;
     overflow-y: auto;
   }
-  
+
   .brand-content {
     padding: 20px;
   }
-  
+
   .features {
     display: none;
   }

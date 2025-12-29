@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Login from '@/views/login/index.vue'
 import Layout from '@/layout/index.vue'
 
+
+
 const routes = [
   {
     path: '/login',
@@ -12,7 +14,7 @@ const routes = [
     component: Layout,
     redirect: '/project',
     children: [
-  
+
       {
         path: 'project',
         children: [
@@ -78,6 +80,11 @@ const routes = [
         name: "ChangePassword",
         component: () => import('@/views/user/changePasswordPage.vue'),
         meta: { requiresAuth: true }
+      },
+      {
+        path: "/user",
+        name: "User",
+        component: () => import("@/views/user/index.vue")
       }
     ]
   },

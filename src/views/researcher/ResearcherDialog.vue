@@ -34,57 +34,68 @@
 </template>
 
 <script setup>
-import { reactive, watch } from 'vue'
-import { addResearcher, updateResearcher } from '@/api/researcher'
-
+import { reactive, watch } from "vue";
+import { addResearcher, updateResearcher } from "@/api/researcher";
+import { ElMessage } from "element-plus";
 const props = defineProps({
   modelValue: Boolean,
-  data: Object
-})
+  data: Object,
+});
 
-const emit = defineEmits(['update:modelValue', 'success'])
+const emit = defineEmits(["update:modelValue", "success"]);
 
-const visible = defineModel()
+const visible = defineModel();
 
 const form = reactive({
   id: null,
-  name: '',
-  code: '',
-  college: '',
-  title: '',
-  phone: ''
-})
+  name: "",
+  code: "",
+  college: "",
+  title: "",
+  phone: "",
+});
 
 const reset = () => {
-  form.id = null
-  form.name = ''
-  form.code = ''
-  form.college = ''
-  form.title = ''
-  form.phone = ''
-}
-
+  form.id = null;
+  form.name = "";
+  form.code = "";
+  form.college = "";
+  form.title = "";
+  form.phone = "";
+};
 
 watch(
   () => props.data,
   (val) => {
     if (val) {
-      Object.assign(form, val)
+      Object.assign(form, val);
     } else {
-      reset()
+      reset();
     }
   },
   { immediate: true }
-)
-
+);
 
 const submit = async () => {
+  let res;
   if (form.id) {
-    await updateResearcher(form)
+    res = await updateResearcher(form);
   } else {
-    await addResearcher(form)
+    res = await addResearcher(form);
   }
-  emit('success')
-  visible.value = false
-}
+  console.log(res);
+  if (res.data.code === 200) {
+    emit("success");
+    visible.value = false;
+  } else {
+    console.log(res.data.msg);
+    ElMessage.error(res.data.msg);
+  }
+  // if (res) {
+  //   emit("success");
+  //   visible.value = false;
+  //   return;
+  // } else {
+  // visible.value = false;
+};
 </script>
