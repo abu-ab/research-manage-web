@@ -78,16 +78,44 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="230" fixed="right">
+        <el-table-column label="操作" width="300" fixed="right">
           <template #default="{ row }">
             <div class="action-buttons">
-              <el-button link type="primary" @click="edit(row)" :icon="Edit">
+              <el-button
+                link
+                type="primary"
+                @click="edit(row)"
+                :icon="Edit"
+                v-if="row.status == 0"
+              >
                 编辑
               </el-button>
               <el-button link type="info" @click="viewDetail(row)" :icon="View">
                 详情
               </el-button>
-              <el-button link type="danger" @click="remove(row)" :icon="Delete">
+              <el-button
+                link
+                type="warning"
+                @click="review(row)"
+                v-if="isAdmin && row.status === 0"
+                :icon="Timer"
+                >审核</el-button
+              >
+              <el-button
+                link
+                type="success"
+                @click="success(row)"
+                v-if="row.status === 1"
+                :icon="Key"
+                >结项</el-button
+              >
+              <el-button
+                v-if="isAdmin"
+                link
+                type="danger"
+                @click="remove(row)"
+                :icon="Delete"
+              >
                 删除
               </el-button>
             </div>
@@ -156,7 +184,12 @@
       </div>
       <template #footer>
         <el-button @click="detailVisible = false">关闭</el-button>
-        <el-button type="primary" @click="edit(currentRow)">编辑项目</el-button>
+        <el-button
+          type="primary"
+          @click="edit(currentRow)"
+          v-if="currentRow.status == 0"
+          >编辑项目</el-button
+        >
       </template>
     </el-dialog>
   </div>
@@ -166,7 +199,7 @@
 import { reactive, ref, onMounted } from "vue";
 import { ElMessageBox, ElMessage } from "element-plus";
 import ProjectDialog from "./ProjectDialog.vue";
-import { getProjectPage, deleteProject } from "@/api/project";
+import { getProjectPage, deleteProject, updateProject } from "@/api/project";
 import { formatDate } from "@/utils/format";
 import { PROJECT_STATUS_MAP } from "@/constants/projectStatus";
 import {
@@ -181,7 +214,6 @@ import {
   View,
   Delete,
 } from "@element-plus/icons-vue";
-
 const query = reactive({
   name: "",
   code: "",
@@ -201,6 +233,9 @@ const page = reactive({
 const getStatusCount = (status) => {
   return list.value.filter((item) => item.status === status).length;
 };
+
+const user = JSON.parse(localStorage.getItem("user") || "{}");
+const isAdmin = user.role === "ADMIN";
 
 // 获取状态图标
 const getStatusIcon = (status) => {
@@ -264,6 +299,52 @@ const add = () => {
 const edit = (row) => {
   currentRow.value = { ...row };
   dialogVisible.value = true;
+};
+
+const review = (row) => {
+  ElMessageBox.confirm(
+    `确认审核通过项目 "${row.name}" 吗？审核通过后项目状态将更新为进行中。`,
+    {
+      confirmButtonText: "确认",
+      cancelButtonText: "取消",
+      type: "warning",
+    }
+  )
+    .then(() => {
+      row.status = 1;
+      updateProject(row)
+        .then(() => {
+          ElMessage.success("审核通过，项目状态已更新为进行中");
+          loadData();
+        })
+        .catch(() => {
+          ElMessage.error("审核失败，请稍后重试");
+        });
+    })
+    .catch(() => {});
+};
+
+const success = (row) => {
+  ElMessageBox.confirm(
+    `确认结项项目 "${row.name}" 吗？结项后项目状态将更新为已结项。`,
+    {
+      confirmButtonText: "确认",
+      cancelButtonText: "取消",
+      type: "warning",
+    }
+  )
+    .then(() => {
+      row.status = 2;
+      updateProject(row)
+        .then(() => {
+          ElMessage.success("项目已结项，状态已更新为已结项");
+          loadData();
+        })
+        .catch(() => {
+          ElMessage.error("结项失败，请稍后重试");
+        });
+    })
+    .catch(() => {});
 };
 
 const viewDetail = (row) => {

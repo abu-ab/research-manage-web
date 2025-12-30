@@ -25,7 +25,7 @@
       <el-form-item label="负责人" prop="leader">
         <el-input v-model="form.leader" />
       </el-form-item>
-      <el-form-item label="项目状态" prop="status">
+      <!-- <el-form-item label="项目状态" prop="status">
         <el-select
           v-model="form.status"
           placeholder="项目状态"
@@ -39,7 +39,7 @@
             :value="item.value"
           />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="项目简介" prop="description">
         <el-input v-model="form.description" type="textarea" rows="3" />
       </el-form-item>
@@ -123,7 +123,7 @@ const rules = {
   type: [{ required: true, message: "请输入项目性质", trigger: "blur" }],
   duration: [{ required: true, message: "请输入研究周期", trigger: "blur" }],
   leader: [{ required: true, message: "请输入负责人", trigger: "blur" }],
-  status: [{ required: true, message: "请输入项目状态", trigger: "blur" }],
+  // status: [{ required: true, message: "请输入项目状态", trigger: "blur" }],
 };
 
 // 项目成员
